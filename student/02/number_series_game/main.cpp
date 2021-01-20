@@ -1,6 +1,5 @@
 #include <iostream>
 
-
 int main()
 {
     int numero = 0;
@@ -9,7 +8,13 @@ int main()
 
     int i = 1;
     while ( i <= numero ) {
-        std::cout << i << std::endl;
+        if ( i % 3 == 0 ) {
+             std::cout << "zip" << std::endl;
+        }
+        else {
+            std::cout << i << std::endl;
+        }
         ++i;
+
     }
 }
