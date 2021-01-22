@@ -6,18 +6,16 @@ using namespace std;
 int main()
 {
     int number = 0;
-    while ( number <= 0 ) {
-        cout << "Enter a positive number: ";
-        cin >> number;
-        if ( number <= 0) {
-            cout << "Only positive numbers accepted" << endl;
-        }
+
+    cout << "Enter a positive number: ";
+    cin >> number;
+    if ( number <= 0) {
+        cout << "Only positive numbers accepted" << endl;
     }
 
-    double number_rooted = sqrt(number);
-    int number_rounded = ceil(number_rooted);
 
-    int index = number_rounded;
+    int number_rooted = sqrt(number);
+    int index = number_rooted;
     while (index > 0 ) {
 
         if (number % index == 0) {
