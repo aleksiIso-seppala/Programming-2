@@ -9,7 +9,7 @@ int main()
     cin >> number;
     int number_squared = number * number * number;
 
-    if ( number_squared < 0 or number_squared <= number) {
+    if ( number_squared < 0 or number_squared < number) {
         cout << "Error! The cube of " << number << " is not " << number_squared << "." << endl;
     }
     else {
