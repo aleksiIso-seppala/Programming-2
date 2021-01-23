@@ -55,7 +55,7 @@ int main() {
     if (pass_number == "q") {
         long int probability = 0;
         probability = calculate_probability(total_balls, drawn_balls);
-        cout << "The probability of guessing all " << total_balls << " balls correctly is 1/" << probability << endl;
+        cout << "The probability of guessing all " << drawn_balls << " balls correctly is 1/" << probability << endl;
     }
 
     return 0;
