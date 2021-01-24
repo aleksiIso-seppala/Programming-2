@@ -22,35 +22,37 @@ int encrypt_text(string encryption_key, string line){
     return EXIT_SUCCESS;
 }
 
-int check_lowercase(string line){
+bool check_lowercase(string line){
 
     int length = line.length();
     for (int i = 0; i<= length - 1; i++) {
         int ascii_character = line.at(i);
         if (ascii_character < 97 or ascii_character > 122){
             cout << "Error! The encryption key must contain only lower case characters." << endl;
-            return EXIT_FAILURE;
+            return false;
         }
     }
-    return EXIT_SUCCESS;
+    return true;
 }
 
-int check_key(string encryption_key){
+bool check_key(string encryption_key){
 
     if ( encryption_key.length() != 26){
         cout << "Error! The encryption key must contain 26 characters." << endl;
-        return EXIT_FAILURE;
+        return false;
     }
-    check_lowercase(encryption_key);
+    if ( not check_lowercase(encryption_key)){
+        return false;
+    }
 
     for (int i = 97; i<= 122; i++) {
         char character = i;
         if ( encryption_key.find(character) == string::npos){
-            cout << "Error! The encryption key must contain all alphabets a-z" << endl;
-            return EXIT_FAILURE;
+            cout << "Error! The encryption key must contain all alphabets a-z." << endl;
+            return false;
         }
     }
-    return EXIT_SUCCESS;
+    return true;
 }
 
 int main()
@@ -58,12 +60,16 @@ int main()
     string encryption_key = "";
     cout << "Enter the encryption key: ";
     getline(cin, encryption_key);
-    check_key(encryption_key);
+    if (not check_key(encryption_key)){
+        exit (EXIT_FAILURE);
+    }
 
     string line = "";
     cout << "Enter the text to be encrypted: ";
     getline(cin, line);
-    check_lowercase(line);
+    if (not check_lowercase(line)){
+        exit (EXIT_FAILURE);
+    }
     encrypt_text(encryption_key, line);
 
     return 0;
