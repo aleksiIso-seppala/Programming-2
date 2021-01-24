@@ -4,6 +4,24 @@
 
 using namespace std;
 
+int encrypt_text(string encryption_key, string line){
+
+    int length = line.length();
+    for (int i = 0; i <= length - 1; i++){
+        for (int j = 97; j <= 122; j++){
+            char character = j;
+            if (line.at(i) == character){
+                char encrypted_letter = encryption_key.at(j-97);
+                string encrypted{encrypted_letter};
+                line.replace(i, 1, encrypted);
+                break;
+            }
+        }
+    }
+    cout << "Encrypted text: " << line << endl;
+    return EXIT_SUCCESS;
+}
+
 int check_lowercase(string line){
 
     int length = line.length();
@@ -38,8 +56,15 @@ int check_key(string encryption_key){
 int main()
 {
     string encryption_key = "";
-    cout << "Enter the encryption key: " << endl;
+    cout << "Enter the encryption key: ";
     getline(cin, encryption_key);
     check_key(encryption_key);
+
+    string line = "";
+    cout << "Enter the text to be encrypted: ";
+    getline(cin, line);
+    check_lowercase(line);
+    encrypt_text(encryption_key, line);
+
     return 0;
 }
