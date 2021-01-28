@@ -11,6 +11,19 @@ public:
 
     // More methods
 
+    // method for setting a credit limit
+    void set_credit_limit(int limit);
+
+    // method for saving money
+    void save_money(int amount);
+    // method for printing an account
+    void print() const;
+    // method for taking money from an account
+    void take_money(int amount);
+
+    // method for transferring money
+    void transfer_to(account, int amount);
+
 private:
     // Generates IBAN (based on running_number_ below).
     // Allows no more than 99 accounts.
@@ -24,6 +37,12 @@ private:
     static int running_number_;
 
     // More attributes/methods
+    bool has_credit_;
+    std::string owner_;
+    int credit_limit_ = 0;
+    int money_ = 0;
+    std::string iban_ = "";
+
 };
 
 #endif // ACCOUNT_HH

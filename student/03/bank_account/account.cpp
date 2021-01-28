@@ -3,7 +3,7 @@
 
 Account::Account(const std::string& owner, bool has_credit):
 {
-    generate_iban();
+    Account::generate_iban();
 }
 
 // Setting initial value for the static attribute running_number_
@@ -25,4 +25,43 @@ void Account::generate_iban()
 
     iban_ = "FI00 1234 ";
     iban_.append(suffix);
+}
+
+void Account::set_credit_limit(int limit){
+    if (not has_credit_){
+        std::cout << "Cannot set credit limit: the account has no credit card" << std::endl;
+        return;
+    }
+    credit_limit_ = limit;
+}
+
+void Account::save_money(int amount){
+    money_ = money_ + amount;
+}
+
+void Account::print() const{
+    std::cout << owner_ << " : " << iban_ << " : " << money_ << " euros" << std::endl;
+}
+
+void Account::take_money(int amount){
+    if (has_credit_){
+        int balance = money_ + credit_limit_;
+        if ((balance - amount) < 0){
+            std::cout << "Cannot take money: credit limit overflow" << std::endl;
+        }
+        else {
+            money_ = money_ - amount;
+            std::cout << amount << " euros taken: new balance of " << iban_ << " is " << money_ << " euros" << std::endl;
+        }
+    }
+    else {
+        if (amount > money_){
+            money_ = money_ - amount;
+            return;
+        }
+        else{
+            std::cout << "Cannot take money: balance underflow" << std::endl;
+            return;
+        }
+    }
 }
