@@ -22,7 +22,7 @@ public:
     void take_money(int amount);
 
     // method for transferring money
-    void transfer_to(account, int amount);
+    void transfer_to(Account account, int amount);
 
 private:
     // Generates IBAN (based on running_number_ below).

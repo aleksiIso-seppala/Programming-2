@@ -65,3 +65,8 @@ void Account::take_money(int amount){
         }
     }
 }
+
+void Account::transfer_to(Account account, int amount){
+    take_money(amount);
+    account.save_money(amount);
+}
