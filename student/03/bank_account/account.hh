@@ -7,7 +7,7 @@ class Account
 {
 public:
     // Constructor
-    Account(const std::string& owner, bool has_credit = false);
+    Account(const std::string& owner_, bool has_credit_ = false);
 
     // More methods
 

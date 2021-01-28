@@ -1,7 +1,7 @@
 #include "account.hh"
 #include <iostream>
 
-Account::Account(const std::string& owner, bool has_credit):
+Account::Account(const std::string& owner_, bool has_credit_)
 {
     Account::generate_iban();
 }
@@ -28,11 +28,13 @@ void Account::generate_iban()
 }
 
 void Account::set_credit_limit(int limit){
-    if (not has_credit_){
-        std::cout << "Cannot set credit limit: the account has no credit card" << std::endl;
+    if (has_credit_){
+        credit_limit_ = limit;
         return;
     }
-    credit_limit_ = limit;
+
+    std::cout << "Cannot set credit limit: the account has no credit card" << std::endl;
+    return;
 }
 
 void Account::save_money(int amount){
@@ -55,7 +57,7 @@ void Account::take_money(int amount){
         }
     }
     else {
-        if (amount > money_){
+        if (money_ <= amount){
             money_ = money_ - amount;
             return;
         }
