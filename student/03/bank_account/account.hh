@@ -19,10 +19,10 @@ public:
     // method for printing an account
     void print() const;
     // method for taking money from an account
-    void take_money(int amount);
+    bool take_money(int amount);
 
     // method for transferring money
-    void transfer_to(Account account, int amount);
+    void transfer_to(Account& account_to, int amount);
 
 private:
     // Generates IBAN (based on running_number_ below).
