@@ -2,7 +2,7 @@
 #include <iostream>
 
 Account::Account(const std::string& owner_, bool has_credit_):
-    owner_(owner_), has_credit_(has_credit_){
+    has_credit_(has_credit_), owner_(owner_) {
     Account::generate_iban();
 }
 
