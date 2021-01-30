@@ -26,5 +26,7 @@ bool Player::has_won(){
     if (score == 50){
         return true;
     }
-    return false;
+    else{
+        return false;
+    }
 }

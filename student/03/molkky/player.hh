@@ -16,7 +16,7 @@ public:
 private:
     //attribuutit
     std::string name;
-    int score;
+    int score = 0;
 
 };
 
