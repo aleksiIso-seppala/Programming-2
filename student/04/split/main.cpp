@@ -6,6 +6,24 @@
 // TODO: Implement split function here
 // Do not change main function
 
+std::vector<std::string> split(std::string string, char separator, bool skip_empty = false){
+
+    std::vector<std::string> vector = {};
+    std::string line = "";
+    for (auto character : string){
+        if (character == separator){
+            if (skip_empty and line == ""){
+                continue;
+            }
+            vector.push_back(line);
+            line = "";
+            continue;
+        }
+        line += (character);
+    }
+    vector.push_back(line);
+    return vector;
+}
 
 int main()
 {
