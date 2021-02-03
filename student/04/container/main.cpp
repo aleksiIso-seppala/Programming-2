@@ -62,6 +62,9 @@ bool is_geometric_series(std::vector<int> ints){
         int geometric_number = ints.at(1) / ints.at(0);
         if (number == 0){
             continue;
+        if (ints.at(number) == 0){
+            return false;
+        }
         }
         if (ints.at(number) / ints.at(number-1) != geometric_number){
             return false;
