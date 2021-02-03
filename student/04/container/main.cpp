@@ -28,21 +28,45 @@ bool same_values(std::vector<int> ints){
 }
 
 bool is_ordered_non_strict_ascending(std::vector<int> ints){
-    int index = 0;
-    for (int number : ints){
-        if ( ints.at(index-1) > number){
+    int vector_size = ints.size() - 1;
+    for (int number = 0; number <= vector_size; ++number){
+        if (number == 0){
+            continue;
+        }
+        if ( ints.at(number-1) > ints.at(number)){
                 return false;
         }
-        index ++;
     }
     return true;
 }
 
 bool is_arithmetic_series(std::vector<int> ints){
+    int vector_size = ints.size() -1 ;
+    for (int number = 0; number <= vector_size; ++number){
+        int arithmetic_number = ints.at(1) - ints.at(0);
+        if (number == 0){
+            continue;
+        }
+        if (ints.at(number) - ints.at(number-1) != arithmetic_number){
+            return false;
+        }
+    }
+
     return true;
 }
 
 bool is_geometric_series(std::vector<int> ints){
+
+    int vector_size = ints.size() - 1;
+    for (int number = 0; number <= vector_size; ++number){
+        int geometric_number = ints.at(1) / ints.at(0);
+        if (number == 0){
+            continue;
+        }
+        if (ints.at(number) / ints.at(number-1) != geometric_number){
+            return false;
+        }
+    }
     return true;
 }
 
