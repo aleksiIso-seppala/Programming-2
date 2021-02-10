@@ -244,6 +244,7 @@ int main()
     std::getline(std::cin, seed_str);
     int seed = stoi_with_check(seed_str);
     init_with_cards(game_board, seed);
+    print(game_board);
 
     // Lisää koodia
     // More code

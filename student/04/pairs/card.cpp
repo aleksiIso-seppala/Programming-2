@@ -53,6 +53,18 @@ void Card::print() const
 {
     // Kirjoita toteutus tähän
     // Write implementation here
+    if (visibility_ == HIDDEN){
+        std::cout << HIDDEN_CHAR;
+        return;
+    }
+    if (visibility_ == OPEN){
+       std::cout << letter_;
+       return;
+    }
+    else{
+        std::cout << EMPTY_CHAR;
+        return;
+    }
 }
 
 void Card::remove_from_game_board()
