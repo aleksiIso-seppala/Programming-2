@@ -53,6 +53,8 @@ public:
 private:
     // Lisää tarvittavat attribuutit tähän
     // Add necessary attributes here
+    const std::string& name;
+    unsigned int pairs = 0;
 };
 
 #endif // PLAYER_HH

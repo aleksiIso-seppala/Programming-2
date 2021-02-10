@@ -204,15 +204,15 @@ void print(const Game_board_type& g_board)
 // mahdollisimman lähellä toisiaan.
 //
 // Asks the desired product from the user, and calculates the factors of
-// the product such that the factor as near to each other as possible.
+// the product such that tGame_board_type = vector<vector<Card>>;he factor as near to each other as possible.
 void ask_product_and_calculate_factors(unsigned int& smaller_factor, unsigned int& bigger_factor)
 {
     unsigned int product = 0;
     while(not (product > 0 and product % 2 == 0))
     {
-        std::cout << INPUT_AMOUNT_OF_CARDS;
+        cout << INPUT_AMOUNT_OF_CARDS;
         string product_str = "";
-        std::getline(std::cin, product_str);
+        getline(std::cin, product_str);
         product = stoi_with_check(product_str);
     }
 
@@ -228,6 +228,31 @@ void ask_product_and_calculate_factors(unsigned int& smaller_factor, unsigned in
 
 // Lisää funktioita
 // More functions
+
+// Kysyy pelaajien määrän ja luo pelaajat
+void ask_players_and_create(){
+
+    unsigned int amount_of_players = 0;
+    while( amount_of_players <= 0 ){
+
+        cout << INPUT_AMOUNT_OF_PLAYERS;
+        string product_str = "";
+        getline(cin, product_str);
+        amount_of_players = stoi_with_check(product_str);
+    }
+
+    string player_name = "";
+    cout << "List " << amount_of_players << " players: ";
+
+    for (unsigned int i = 1; i <= amount_of_players; ++i){
+        cin >> player_name;
+        Player player = Player(player_name);
+        string name = player.get_name();
+        cout << name << endl;
+    }
+
+
+}
 
 
 int main()
@@ -245,6 +270,11 @@ int main()
     int seed = stoi_with_check(seed_str);
     init_with_cards(game_board, seed);
     print(game_board);
+    ask_players_and_create();
+
+    for (;;){
+
+    }
 
     // Lisää koodia
     // More code
