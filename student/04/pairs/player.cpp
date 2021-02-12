@@ -8,7 +8,7 @@
 
 // Add class implementation here.
 // It should be enough to write only 1-2 code lines in each public method.
-Player::Player(const std::string& name):
+Player::Player(const std::string name):
     name(name){
 
 }

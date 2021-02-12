@@ -229,8 +229,8 @@ void ask_product_and_calculate_factors(unsigned int& smaller_factor, unsigned in
 // Lisää funktioita
 // More functions
 
-// Kysyy pelaajien määrän ja luo pelaajat
-void ask_players_and_create(){
+// Kysyy pelaajien määrän ja luo pelaajat. Palauttaa vektorin, johon pelaajat on sijoitettu.
+vector<Player> ask_and_create_players(){
 
     unsigned int amount_of_players = 0;
     while( amount_of_players <= 0 ){
@@ -241,19 +241,53 @@ void ask_players_and_create(){
         amount_of_players = stoi_with_check(product_str);
     }
 
+    vector<Player> players = {};
     string player_name = "";
     cout << "List " << amount_of_players << " players: ";
 
     for (unsigned int i = 1; i <= amount_of_players; ++i){
         cin >> player_name;
         Player player = Player(player_name);
-        string name = player.get_name();
-        cout << name << endl;
+        players.push_back(player);
     }
 
+    return players;
+}
+
+bool are_coordinates_valid(vector<string> coordinates, unsigned int board_x, unsigned int board_y){
+
+    if (coordinates.size() != 4){
+        return false;
+    }
+    int x1 = stoi_with_check(coordinates.at(0));
+    int y1 = stoi_with_check(coordinates.at(1));
+    int x2 = stoi_with_check(coordinates.at(2));
+    int y2 = stoi_with_check(coordinates.at(3));
+    return true;
 
 }
 
+vector<string> read_input(string player_name){
+
+    vector<string> input_in_vector = {};
+    string input = "";
+
+    cout << player_name << " " << INPUT_CARDS;
+    for (int i=1; i<=4; ++i){
+        cin >> input;
+
+        // Jos input on q (quit), palauttaa funktio tämän kirjaimen jolloin main funktio
+        // osaa lopettaa ohjelman.
+        if (input == "q"){
+            input_in_vector = {};
+            input_in_vector.push_back(input);
+            break;
+        }
+        input_in_vector.push_back(input);
+
+    }
+    return input_in_vector;
+}
 
 int main()
 {
@@ -267,14 +301,36 @@ int main()
     string seed_str = "";
     std::cout << INPUT_SEED;
     std::getline(std::cin, seed_str);
+
     int seed = stoi_with_check(seed_str);
     init_with_cards(game_board, seed);
     print(game_board);
-    ask_players_and_create();
 
+    vector<Player> players = ask_and_create_players();
+
+    Player* in_turn = 0;
+    unsigned long int index = 0;
     for (;;){
+        in_turn = &players.at(index);
+        string player_name = in_turn->get_name();
+
+        auto input_in_vector = read_input(player_name);
+        if (input_in_vector.size() == 1 and input_in_vector.at(0) == "q"){
+            cout << GIVING_UP << endl;
+            break;
+        }
+
+        if (not are_coordinates_valid(input_in_vector, factor1, factor2)){
+            cout << INVALID_CARD << endl;
+            continue;
+        }
+        ++index;
+        if ( index == players.size()){
+            index = 0;
+        }
 
     }
+
 
     // Lisää koodia
     // More code

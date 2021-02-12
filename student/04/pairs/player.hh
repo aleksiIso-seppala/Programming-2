@@ -24,7 +24,7 @@ public:
     // Rakentaja: luo annetun nimisen pelaajan.
     //
     // Constructor: creates a player with the given name.
-    Player(const std::string& name);
+    Player(const std::string name);
 
     // Palauttaa pelaajan nimen.
     //
@@ -53,7 +53,7 @@ public:
 private:
     // Lisää tarvittavat attribuutit tähän
     // Add necessary attributes here
-    const std::string& name;
+    const std::string name;
     unsigned int pairs = 0;
 };
 
