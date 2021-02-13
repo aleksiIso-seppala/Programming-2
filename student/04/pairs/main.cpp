@@ -201,11 +201,11 @@ void print(const Game_board_type& g_board)
 }
 
 // Kysyy käyttäjältä tulon ja sellaiset tulon tekijät, jotka ovat
-// mahdollisimman lähellä toisiaan.
+// mahdollisimman lähellä toisiaan. Palauttaa tulon (tätä hyödynnetään myöhemmin pelin lopettamiseen).
 //
 // Asks the desired product from the user, and calculates the factors of
 // the product such that tGame_board_type = vector<vector<Card>>;he factor as near to each other as possible.
-void ask_product_and_calculate_factors(unsigned int& smaller_factor, unsigned int& bigger_factor)
+unsigned int ask_product_and_calculate_factors(unsigned int& smaller_factor, unsigned int& bigger_factor)
 {
     unsigned int product = 0;
     while(not (product > 0 and product % 2 == 0))
@@ -224,6 +224,7 @@ void ask_product_and_calculate_factors(unsigned int& smaller_factor, unsigned in
         }
     }
     bigger_factor = product / smaller_factor;
+    return product;
 }
 
 // Lisää funktioita
@@ -322,32 +323,32 @@ vector<unsigned int> string_to_int(vector<string> vector_as_string){
 // kääntää kortin
 void turn_card(vector<unsigned int> coordinates, Game_board_type& g_board){
 
-    unsigned int y1 = coordinates.at(0);
-    unsigned int x1 = coordinates.at(1);
-    unsigned int y2 = coordinates.at(2);
-    unsigned int x2 = coordinates.at(3);
+    unsigned int x1 = coordinates.at(0);
+    unsigned int y1 = coordinates.at(1);
+    unsigned int x2 = coordinates.at(2);
+    unsigned int y2 = coordinates.at(3);
 
-    g_board.at(x1-1).at(y1-1).set_visibility(OPEN);
-    g_board.at(x2-1).at(y2-1).set_visibility(OPEN);
+    g_board.at(y1-1).at(x1-1).set_visibility(OPEN);
+    g_board.at(y2-1).at(x2-1).set_visibility(OPEN);
     return;
 }
 // tarkistaa onko käännetyt kortit parit, jos kortit eivät olleet parit, kääntää kortit takaisin
 // ja palauttaa arvon false. Jos kortit olivat parit, poistaa kortit laudalta ja palauttaa arvon true
 bool are_there_pairs(vector<unsigned int> coordinates, Game_board_type& g_board){
 
-    unsigned int y1 = coordinates.at(0);
-    unsigned int x1 = coordinates.at(1);
-    unsigned int y2 = coordinates.at(2);
-    unsigned int x2 = coordinates.at(3);
+    unsigned int x1 = coordinates.at(0);
+    unsigned int y1 = coordinates.at(1);
+    unsigned int x2 = coordinates.at(2);
+    unsigned int y2 = coordinates.at(3);
 
-    if (g_board.at(x1-1).at(y1-1).get_letter() == g_board.at(x2-1).at(y2-1).get_letter()){
-        g_board.at(x1-1).at(y1-1).set_visibility(EMPTY);
-        g_board.at(x2-1).at(y2-1).set_visibility(EMPTY);
+    if (g_board.at(y1-1).at(x1-1).get_letter() == g_board.at(y2-1).at(x2-1).get_letter()){
+        g_board.at(y1-1).at(x1-1).set_visibility(EMPTY);
+        g_board.at(y2-1).at(x2-1).set_visibility(EMPTY);
         return true;
     }
     else{
-        g_board.at(x1-1).at(y1-1).set_visibility(HIDDEN);
-        g_board.at(x2-1).at(y2-1).set_visibility(HIDDEN);
+        g_board.at(y1-1).at(x1-1).set_visibility(HIDDEN);
+        g_board.at(y2-1).at(x2-1).set_visibility(HIDDEN);
         return false;
     }
 }
@@ -357,7 +358,7 @@ int main()
 
     unsigned int factor1 = 1;
     unsigned int factor2 = 1;
-    ask_product_and_calculate_factors(factor1, factor2);
+    unsigned int amount_of_cards = ask_product_and_calculate_factors(factor1, factor2);
     init_with_empties(game_board, factor1, factor2);
 
     string seed_str = "";
@@ -395,20 +396,54 @@ int main()
         }
         else{
             ++index;
+            cout << NOT_FOUND << endl;
             if ( index == players.size()){
                 index = 0;
-                cout << NOT_FOUND << endl;
             }
         }
         for (auto player : players){
             player.print();
         }
         print(game_board);
+
+        // lasketaan parien määrä kaikilla pelaajilla. Jos pareja on yhtä suuri määrä
+        // kuin on kortteja, kun ne jaetaan luvulla 2, pelilaudan on oltava tyhjä
+        // ja peli voidaan lopettaa.
+        unsigned int total_pairs = 0;
+        for (auto player : players){
+            total_pairs += player.number_of_pairs();
+        }
+        if (total_pairs == (amount_of_cards/2)){
+            cout << GAME_OVER << endl;
+
+            // käydään läpi kaikki pelaajat ja sijoitetaan henkilöt, joilla oli eniten pareja, vektoriin.
+            unsigned int most_pairs = 0;
+            vector<Player> winners = {};
+            for (auto player : players){
+                if (most_pairs < player.number_of_pairs()){
+                    most_pairs = player.number_of_pairs();
+                    winners.clear();
+                    winners.push_back(player);
+                    continue;
+                }
+                if (most_pairs == player.number_of_pairs()){
+                    winners.push_back(player);
+                    continue;
+                }
+            }
+
+            // jos voittajia on yksi, tulostetaan pelaajan nimi, jos voittajia on useampia,
+            // tulostetaan voittajien määrä ja heidän saamat parinsa.
+            if (winners.size() > 1){
+                cout << "Tie of " << winners.size() << " players with " << most_pairs << " pairs." << endl;
+            }
+            else{
+                cout << winners.at(0).get_name() << " has won with " << most_pairs << " pairs." << endl;
+            }
+            break;
+        }
     }
 
-
-    // Lisää koodia
-    // More code
 
     return EXIT_SUCCESS;
 }
