@@ -2,14 +2,14 @@
  * ------------
  * Kuvaa yhtä korttia muistipelissä.
  *
- * COMP.CS.110 K2021
- * */
-//
-/* Class: Card
- * -----------
- * Represents a single card in pairs (memory) game.
+ * Ohjelman kirjoittaja
+ * Nimi: Aleksi Iso-Seppälä
+ * Opiskelijanumero: H292168
+ * Käyttäjätunnus: fsalis
+ * E-Mail: aleksi.iso-seppala@tuni.fi
  *
  * COMP.CS.110 K2021
+ *
  * */
 
 #ifndef CARD_HH

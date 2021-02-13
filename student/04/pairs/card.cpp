@@ -1,3 +1,11 @@
+/*
+* Ohjelman kirjoittaja
+* Nimi: Aleksi Iso-Seppälä
+* Opiskelijanumero: H292168
+* Käyttäjätunnus: fsalis
+* E-Mail: aleksi.iso-seppala@tuni.fi
+* */
+
 #include "card.hh"
 #include <iostream>
 

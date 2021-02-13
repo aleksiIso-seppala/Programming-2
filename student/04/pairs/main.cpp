@@ -1,3 +1,34 @@
+/* Muistipeli
+ *
+ * Kuvaus:
+ *  Ohjelma toteuttaa muistipelin. Pelissä on vaihteleva määrä kortteja ja
+ * pelaajia. Pelin alussa käyttäjältä kysytään myäs siemenluku, koska kortit
+ * arvotaan satunnaisesti pelilaudalle.
+ *  Joka kierroksella vuorossa oleva pelaaja antaa kahden kortin
+ * koordinaatit (yhteensä neljä lukua), minkä jälkeen kyseiset kortit
+ * käännetään näkyviin ja kerrotaan, ovatko ne parit vai ei.
+ * Jos pelaaja sai parit, kortit poistetaan pelilaudalta, pelaajan
+ * pistesaldoa kasvatetaan, ja hän saa uuden vuoron. Jos pelaaja ei saanut
+ * pareja, kortit käännetään takaisin piiloon, ja vuoro siirtyy seuraavalle
+ * pelaajalle.
+ *  Ohjelma tarkistaa pelaajan antamat koordinaatit. Koordinaattien pitää
+ * olla sellaiset, että niiden määrä kortti löytyy pelilaudalta.
+ *  Muutosten jälkeen pelilauta tulostetaan aina uudelleen. Kortit kuvataan
+ * kirjaimina alkaen A:sta niin pitkälle, kuin kortteja on. Kun pelilauta
+ * tulostetaan, näkyvissä oleva kortti kuvataan kyseisellä kirjaimella.
+ * Piiloon käännettyä korttia kuvaa risuaita (#), ja laudalta poistetun
+ * kortin kohdalle tulostetaan piste.
+ *  Peli päättyy, kun kaikki parit on löydetty, ja pelilauta on tyhjä.
+ * Tällöin kerrotaan, kuka tai ketkä voittivat eli saivat eniten pareja.
+ *
+ * Ohjelman kirjoittaja
+ * Nimi: Aleksi Iso-Seppälä
+ * Opiskelijanumero: H292168
+ * Käyttäjätunnus: fsalis
+ * E-Mail: aleksi.iso-seppala@tuni.fi
+ *
+ * */
+
 #include <player.hh>
 #include <card.hh>
 #include <iostream>
@@ -23,11 +54,6 @@ using Game_board_type = vector<vector<Card>>;
 // (kutsumalla stoi-funktiota).
 // Jos annettu merkkijono ei ole numeerinen, palauttaa nollan
 // (mikä johtaa laittomaan korttiin myöhemmin).
-//
-// Converts the given numeric string to the corresponding integer
-// (by calling stoi).
-// If the given string is not numeric, returns 0
-// (which leads to an invalid card later).
 unsigned int stoi_with_check(const string& str)
 {
     bool is_numeric = true;
@@ -50,8 +76,6 @@ unsigned int stoi_with_check(const string& str)
 }
 
 // Täyttää pelilaudan (kooltaan rows * columns) tyhjillä korteilla.
-//
-// Fills the game board, the size of which is rows * columns, with empty cards.
 void init_with_empties(Game_board_type& g_board, unsigned int rows, unsigned int columns)
 {
     g_board.clear();
@@ -70,10 +94,6 @@ void init_with_empties(Game_board_type& g_board, unsigned int rows, unsigned int
 // Etsii seuraavan tyhjän kohdan pelilaudalta (g_board) aloittamalla
 // annetusta kohdasta start ja jatkamalla tarvittaessa alusta.
 // (Kutsutaan vain funktiosta init_with_cards.)
-//
-// Finds the next free position in the game board (g_board), starting from the
-// given position start and continuing from the beginning if needed.
-// (Called only by the function init_with_cards.)
 unsigned int next_free(Game_board_type& g_board, unsigned int start)
 {
     // Selvitetään annetun pelilaudan rivien ja sarakkeiden määrät
@@ -111,9 +131,6 @@ unsigned int next_free(Game_board_type& g_board, unsigned int start)
 
 // Alustaa annetun pelilaudan (g_board) satunnaisesti arvotuilla korteilla
 // annetun siemenarvon (seed) perusteella.
-//
-// Initializes the given game board (g_board) with randomly generated cards,
-// based on the given seed value.
 void init_with_cards(Game_board_type& g_board, int seed)
 {
     // Selvitetään annetun pelilaudan rivien ja sarakkeiden määrät
@@ -155,10 +172,6 @@ void init_with_cards(Game_board_type& g_board, int seed)
 // Tulostaa annetusta merkistä c koostuvan rivin,
 // jonka pituus annetaan parametrissa line_length.
 // (Kutsutaan vain funktiosta print.)
-//
-// Prints a line consisting of the given character c.
-// The length of the line is given in the parameter line_length.
-// (Called only by the function print.)
 void print_line_with_char(char c, unsigned int line_length)
 {
     for(unsigned int i = 0; i < line_length * 2 + 7; ++i)
@@ -169,8 +182,6 @@ void print_line_with_char(char c, unsigned int line_length)
 }
 
 // Tulostaa vaihtelevankokoisen pelilaudan reunuksineen.
-//
-// Prints a variable-length game board with borders.
 void print(const Game_board_type& g_board)
 {
     // Selvitetään annetun pelilaudan rivien ja sarakkeiden määrät
@@ -202,9 +213,6 @@ void print(const Game_board_type& g_board)
 
 // Kysyy käyttäjältä tulon ja sellaiset tulon tekijät, jotka ovat
 // mahdollisimman lähellä toisiaan. Palauttaa tulon (tätä hyödynnetään myöhemmin pelin lopettamiseen).
-//
-// Asks the desired product from the user, and calculates the factors of
-// the product such that tGame_board_type = vector<vector<Card>>;he factor as near to each other as possible.
 unsigned int ask_product_and_calculate_factors(unsigned int& smaller_factor, unsigned int& bigger_factor)
 {
     unsigned int product = 0;
@@ -227,8 +235,6 @@ unsigned int ask_product_and_calculate_factors(unsigned int& smaller_factor, uns
     return product;
 }
 
-// Lisää funktioita
-// More functions
 
 // Kysyy pelaajien määrän ja luo pelaajat. Palauttaa vektorin, johon pelaajat on sijoitettu.
 vector<Player> ask_and_create_players(){
@@ -320,7 +326,7 @@ vector<unsigned int> string_to_int(vector<string> vector_as_string){
     }
     return vector_as_int;
 }
-// kääntää kortin
+// kääntää kortin.
 void turn_card(vector<unsigned int> coordinates, Game_board_type& g_board){
 
     unsigned int x1 = coordinates.at(0);
@@ -416,7 +422,8 @@ int main()
         if (total_pairs == (amount_of_cards/2)){
             cout << GAME_OVER << endl;
 
-            // käydään läpi kaikki pelaajat ja sijoitetaan henkilöt, joilla oli eniten pareja, vektoriin.
+            // käydään läpi kaikki pelaajat ja sijoitetaan henkilöt,
+            // joilla oli eniten pareja, vektoriin winners.
             unsigned int most_pairs = 0;
             vector<Player> winners = {};
             for (auto player : players){

@@ -3,14 +3,14 @@
  * Kuvaa yhtä pelaajaa muistipelissä.
  *
  * COMP.CS.110 K2021
- * */
-//
-/* Class: Player
- * -------------
- * Represents a single player in pairs (memory) game.
  *
- * COMP.CS.110 K2021
+ * Ohjelman kirjoittaja
+ * Nimi: Aleksi Iso-Seppälä
+ * Opiskelijanumero: H292168
+ * Käyttäjätunnus: fsalis
+ * E-Mail: aleksi.iso-seppala@tuni.fi
  * */
+
 
 #ifndef PLAYER_HH
 #define PLAYER_HH
@@ -53,8 +53,8 @@ public:
 private:
     // Lisää tarvittavat attribuutit tähän
     // Add necessary attributes here
-    const std::string name;
-    unsigned int pairs = 0;
+    const std::string name_;
+    unsigned int pairs_ = 0;
 };
 
 #endif // PLAYER_HH
