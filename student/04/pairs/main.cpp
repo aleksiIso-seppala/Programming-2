@@ -254,24 +254,29 @@ vector<Player> ask_and_create_players(){
     return players;
 }
 
+// funktio tarkistaa, ovatko annetut syötteet hyväksyttäviä.
+// palauttaa false, jos koordinaatit ovat virheelliset.
 bool are_coordinates_valid(vector<unsigned int> coordinates, unsigned int board_y,
                            unsigned int board_x, Game_board_type& g_board){
 
     if (coordinates.size() != 4){
         return false;
     }
-    unsigned int x1 = coordinates.at(0);
-    unsigned int y1 = coordinates.at(1);
-    unsigned int x2 = coordinates.at(2);
-    unsigned int y2 = coordinates.at(3);
+    unsigned int y1 = coordinates.at(0);
+    unsigned int x1 = coordinates.at(1);
+    unsigned int y2 = coordinates.at(2);
+    unsigned int x2 = coordinates.at(3);
 
-    if (x1 > board_x or x2 > board_x or y1 > board_y or y2 > board_y){
+    if (x1-1 > board_x or x2-1 > board_x or y1-1 > board_y or y2-1 > board_y){
         return false;
     }
-    if (g_board.at(x1).at(y1).get_visibility() != HIDDEN){
+    if (x1 == 0 or x2 == 0 or y1 == 0 or y2 == 0){
         return false;
     }
-    if (g_board.at(x2).at(y2).get_visibility() != HIDDEN){
+    if (g_board.at(x1-1).at(y1-1).get_visibility() != HIDDEN){
+        return false;
+    }
+    if (g_board.at(x2-1).at(y2-1).get_visibility() != HIDDEN){
         return false;
     }
     if (x1 == x2 and y1 == y2){
@@ -280,12 +285,14 @@ bool are_coordinates_valid(vector<unsigned int> coordinates, unsigned int board_
     return true;
 }
 
+// funktio lukee käyttäjän syötteet ja palauttaa ne vektorina. Jos syöte on "q"
+// palauttaa funktio tämän ja pääohjelma osaa lopettaa ohjelman.
 vector<string> read_input(string player_name){
 
     vector<string> input_in_vector = {};
     string input = "";
 
-    cout << player_name << " " << INPUT_CARDS;
+    cout << player_name << ": " << INPUT_CARDS;
     for (int i=1; i<=4; ++i){
         cin >> input;
 
@@ -302,14 +309,47 @@ vector<string> read_input(string player_name){
     return input_in_vector;
 }
 
+// funktio muuttaa vektorissa olevat syötteet merkkijonosta numeroiksi funktion stoi_with_check avulla
 vector<unsigned int> string_to_int(vector<string> vector_as_string){
 
     vector<unsigned int> vector_as_int;
-    for (int i=0; i<=3 ; ++i){
-        unsigned int coordinate = stoi_with_check(vector_as_string.at(i));
-        vector_as_int.push_back(coordinate);
+    for (auto coordinate : vector_as_string){
+        unsigned int coordinate_as_int = stoi_with_check(coordinate);
+        vector_as_int.push_back(coordinate_as_int);
     }
     return vector_as_int;
+}
+// kääntää kortin
+void turn_card(vector<unsigned int> coordinates, Game_board_type& g_board){
+
+    unsigned int y1 = coordinates.at(0);
+    unsigned int x1 = coordinates.at(1);
+    unsigned int y2 = coordinates.at(2);
+    unsigned int x2 = coordinates.at(3);
+
+    g_board.at(x1-1).at(y1-1).set_visibility(OPEN);
+    g_board.at(x2-1).at(y2-1).set_visibility(OPEN);
+    return;
+}
+// tarkistaa onko käännetyt kortit parit, jos kortit eivät olleet parit, kääntää kortit takaisin
+// ja palauttaa arvon false. Jos kortit olivat parit, poistaa kortit laudalta ja palauttaa arvon true
+bool are_there_pairs(vector<unsigned int> coordinates, Game_board_type& g_board){
+
+    unsigned int y1 = coordinates.at(0);
+    unsigned int x1 = coordinates.at(1);
+    unsigned int y2 = coordinates.at(2);
+    unsigned int x2 = coordinates.at(3);
+
+    if (g_board.at(x1-1).at(y1-1).get_letter() == g_board.at(x2-1).at(y2-1).get_letter()){
+        g_board.at(x1-1).at(y1-1).set_visibility(EMPTY);
+        g_board.at(x2-1).at(y2-1).set_visibility(EMPTY);
+        return true;
+    }
+    else{
+        g_board.at(x1-1).at(y1-1).set_visibility(HIDDEN);
+        g_board.at(x2-1).at(y2-1).set_visibility(HIDDEN);
+        return false;
+    }
 }
 int main()
 {
@@ -326,31 +366,44 @@ int main()
 
     int seed = stoi_with_check(seed_str);
     init_with_cards(game_board, seed);
-    print(game_board);
 
     vector<Player> players = ask_and_create_players();
 
+    print(game_board);
     Player* in_turn = 0;
     unsigned long int index = 0;
     for (;;){
         in_turn = &players.at(index);
         string player_name = in_turn->get_name();
 
-        auto input_in_vector = read_input(player_name);
-        if (input_in_vector.size() == 1 and input_in_vector.at(0) == "q"){
+        auto coordinates_in_string = read_input(player_name);
+        if (coordinates_in_string.size() == 1 and coordinates_in_string.at(0) == "q"){
             cout << GIVING_UP << endl;
             break;
         }
-        vector<unsigned int> vector_in_int = string_to_int(input_in_vector);
-        if (not are_coordinates_valid(vector_in_int, factor1, factor2, game_board)){
+        vector<unsigned int> coordinates_in_int = string_to_int(coordinates_in_string);
+        if (not are_coordinates_valid(coordinates_in_int, factor1, factor2, game_board)){
             cout << INVALID_CARD << endl;
             continue;
         }
-        ++index;
-        if ( index == players.size()){
-            index = 0;
-        }
 
+        turn_card(coordinates_in_int, game_board);
+        print(game_board);
+        if (are_there_pairs(coordinates_in_int, game_board)){
+              in_turn->add_card();
+              cout << FOUND << endl;
+        }
+        else{
+            ++index;
+            if ( index == players.size()){
+                index = 0;
+                cout << NOT_FOUND << endl;
+            }
+        }
+        for (auto player : players){
+            player.print();
+        }
+        print(game_board);
     }
 
 

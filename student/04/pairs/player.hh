@@ -43,7 +43,7 @@ public:
     // Moves the given card from the game board for the player,
     // i.e. inserts it to the collected cards of the player and
     // removes it from the game board.
-    void add_card(Card& card);
+    void add_card();
 
     // Tulostaa pelaajan tilanteen: nimen ja tähän asti kerättyjen parien määrän.
     //

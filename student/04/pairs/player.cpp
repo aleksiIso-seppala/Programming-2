@@ -25,3 +25,7 @@ void Player::print() const{
 
     std::cout << "*** " << name << " has " << pairs << " pair(s)." << std::endl;
 }
+
+void Player::add_card(){
+    pairs = pairs + 1;
+}
