@@ -254,17 +254,30 @@ vector<Player> ask_and_create_players(){
     return players;
 }
 
-bool are_coordinates_valid(vector<string> coordinates, unsigned int board_x, unsigned int board_y){
+bool are_coordinates_valid(vector<unsigned int> coordinates, unsigned int board_y,
+                           unsigned int board_x, Game_board_type& g_board){
 
     if (coordinates.size() != 4){
         return false;
     }
-    int x1 = stoi_with_check(coordinates.at(0));
-    int y1 = stoi_with_check(coordinates.at(1));
-    int x2 = stoi_with_check(coordinates.at(2));
-    int y2 = stoi_with_check(coordinates.at(3));
-    return true;
+    unsigned int x1 = coordinates.at(0);
+    unsigned int y1 = coordinates.at(1);
+    unsigned int x2 = coordinates.at(2);
+    unsigned int y2 = coordinates.at(3);
 
+    if (x1 > board_x or x2 > board_x or y1 > board_y or y2 > board_y){
+        return false;
+    }
+    if (g_board.at(x1).at(y1).get_visibility() != HIDDEN){
+        return false;
+    }
+    if (g_board.at(x2).at(y2).get_visibility() != HIDDEN){
+        return false;
+    }
+    if (x1 == x2 and y1 == y2){
+        return false;
+    }
+    return true;
 }
 
 vector<string> read_input(string player_name){
@@ -289,6 +302,15 @@ vector<string> read_input(string player_name){
     return input_in_vector;
 }
 
+vector<unsigned int> string_to_int(vector<string> vector_as_string){
+
+    vector<unsigned int> vector_as_int;
+    for (int i=0; i<=3 ; ++i){
+        unsigned int coordinate = stoi_with_check(vector_as_string.at(i));
+        vector_as_int.push_back(coordinate);
+    }
+    return vector_as_int;
+}
 int main()
 {
     Game_board_type game_board;
@@ -319,8 +341,8 @@ int main()
             cout << GIVING_UP << endl;
             break;
         }
-
-        if (not are_coordinates_valid(input_in_vector, factor1, factor2)){
+        vector<unsigned int> vector_in_int = string_to_int(input_in_vector);
+        if (not are_coordinates_valid(vector_in_int, factor1, factor2, game_board)){
             cout << INVALID_CARD << endl;
             continue;
         }
