@@ -358,6 +358,17 @@ bool are_there_pairs(vector<unsigned int> coordinates, Game_board_type& g_board)
         return false;
     }
 }
+// Funktio määrittää, onko peli ohi. Tämä selvitetään laskemalla parien määrä kaikilla pelaajilla.
+// Jos pareja on yhtä suuri määrä kuin on kortteja,
+// kun ne jaetaan luvulla 2, pelilaudan on oltava tyhjä ja peli voidaan lopettaa.
+bool is_game_over(vector<Player> players, unsigned int total_cards){
+
+    unsigned int total_pairs = 0;
+    for (auto player : players){
+        total_pairs += player.number_of_pairs();
+    }
+    return total_pairs == (total_cards/2);
+}
 int main()
 {
     Game_board_type game_board;
@@ -412,14 +423,8 @@ int main()
         }
         print(game_board);
 
-        // lasketaan parien määrä kaikilla pelaajilla. Jos pareja on yhtä suuri määrä
-        // kuin on kortteja, kun ne jaetaan luvulla 2, pelilaudan on oltava tyhjä
-        // ja peli voidaan lopettaa.
-        unsigned int total_pairs = 0;
-        for (auto player : players){
-            total_pairs += player.number_of_pairs();
-        }
-        if (total_pairs == (amount_of_cards/2)){
+
+        if (is_game_over(players, amount_of_cards)){
             cout << GAME_OVER << endl;
 
             // käydään läpi kaikki pelaajat ja sijoitetaan henkilöt,
