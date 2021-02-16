@@ -18,9 +18,11 @@ int main()
     ofstream tiedost_olio_2(output_file);
     if (not tiedosto_olio) {
         cout << "Error! The file " << input_file << " cannot be opened." << endl;
+        return 1;
     }
     else if (not tiedost_olio_2) {
        cout << "Error! The file " << output_file << " cannot be opened." << endl;
+       return 1;
     }
     else {
         int index = 1;
