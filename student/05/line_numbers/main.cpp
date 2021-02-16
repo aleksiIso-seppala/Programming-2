@@ -8,11 +8,11 @@ int main()
 {
     string input_file = "";
     cout << "Input file: ";
-    cin >> input_file;
+    getline(cin, input_file);
 
     string output_file = "";
-    cout << "Output file; ";
-    cin >> output_file;
+    cout << "Output file: ";
+    getline(cin, output_file);
 
     ifstream tiedosto_olio(input_file);
     ofstream tiedost_olio_2(output_file);
@@ -29,6 +29,7 @@ int main()
         while ( getline(tiedosto_olio, rivi)) {
             string line = rivi;
             tiedost_olio_2 << index << " " << line << endl;
+            ++index;
         }
         tiedosto_olio.close();
         tiedost_olio_2.close();
