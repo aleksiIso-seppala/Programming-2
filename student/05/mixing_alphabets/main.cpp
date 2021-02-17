@@ -18,7 +18,10 @@ int main()
         {
             return EXIT_SUCCESS;
         }
-
+        if ( word.size() == 1){
+            std::cout << word << std::endl;
+            continue;
+        }
         auto alku = word.begin();
         auto loppu = word.end();
         ++alku;
