@@ -13,7 +13,7 @@ int main()
 
     ifstream tiedosto_olio(tiedoston_nimi);
     if (not tiedosto_olio){
-        cout << "Error! file " << tiedoston_nimi << " cannot be opened." << endl;
+        cout << "Error! The file " << tiedoston_nimi << " cannot be opened." << endl;
         return EXIT_FAILURE;
     }
 
