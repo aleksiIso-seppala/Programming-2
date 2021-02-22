@@ -14,7 +14,9 @@ vector<string> split(string row){
     char separator = ' ';
         for (auto character : row){
             if (character == separator){
-                vector.push_back(line);
+                if (not (count(vector.begin(), vector.end(), line))){
+                    vector.push_back(line);
+                }
                 line = "";
                 continue;
             }
