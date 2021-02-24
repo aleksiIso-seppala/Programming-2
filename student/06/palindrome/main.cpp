@@ -11,18 +11,21 @@ bool palindrome_recursive(std::string s)
   // ------------
     int string_length = s.size();
 
-  if (string_length <= 1){
-      return true;
-  }
-    if (s.at(0) == s.at(string_length-1)){
-        s.erase(string_length-1) ;
-        s.erase(0);
-        palindrome_recursive(s);
+
+    if (string_length <= 1){
         return true;
     }
+
     else{
+        if(s.at(0) != s.at(string_length-1)){
         return false;
+        }
+        s.erase((s.end()-1),s.end());
+        s.erase(s.begin(), (s.begin()+1));
+        return palindrome_recursive(s);
     }
+
+
   // Add your implementation here
 }
 
