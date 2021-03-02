@@ -2,10 +2,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 
 const std::string HELP_TEXT = "S = store id1 i2\nP = print id\n"
                               "C = count id\nD = depth id\n";
 
+using namespace std;
 
 std::vector<std::string> split(const std::string& s, const char delimiter, bool ignore_empty = false){
     std::vector<std::string> result;
@@ -26,13 +28,89 @@ std::vector<std::string> split(const std::string& s, const char delimiter, bool 
     }
     return result;
 }
+void save (string user1, string user2, map<string, vector<string>>& users){
+
+    if (users.find(user1) != users.end()){
+        users.at(user1).push_back(user2);
+    }
+    else{
+        vector<string> empty_vector;
+        users.insert({user1, empty_vector});
+        users.at(user1).push_back(user2);
+    }
+}
 
 
+void print (string user, map<string, vector<string>> users, int& dots){
+
+    if( dots == 0){
+        cout << user << endl;
+        dots += 2;
+    }
+
+    if (users.find(user) == users.end()){
+        cout << string(dots, '.') << user << endl;
+        dots -= 2;
+        return;
+    }
+
+    for(auto name : users.at(user)){
+        cout << string(dots, '.') << name << endl;
+        if (users.find(name) == users.end()){
+            if (dots > 2){
+                dots -= 2;
+            }
+            continue;
+        }
+        else{
+            dots += 2;
+            print(name, users, dots);
+        }
+    }
+}
+
+int count (string user, map<string, vector<string>> users, int& network_size){
+
+    if (users.find(user) == users.end()){
+        return 0;
+    }
+    network_size += users.at(user).size();
+
+    for (auto name : users.at(user)){
+        if (users.find(name) == users.end()){
+            continue;
+        }
+        else{
+            count(name, users, network_size);
+            continue;
+        }
+    }
+    return network_size;
+}
+
+int depth (string user, map<string, vector<string>> users, int& depth_amount){
+
+    if (users.find(user) == users.end()){
+        return 1;
+    }
+    depth_amount += 1;
+    for (auto name : users.at(user)){
+        if (users.find(name) == users.end()){
+            continue;
+        }
+        else{
+            depth_amount += 1;
+            depth(name, users, depth_amount);
+        }
+    }
+
+    return depth_amount;
+}
 
 int main()
 {
     // TODO: Implement the datastructure here
-
+    map<string, vector<string>> users;
 
     while(true){
         std::string line;
@@ -50,6 +128,7 @@ int main()
             std::string id1 = parts.at(1);
             std::string id2 = parts.at(2);
 
+            save(id1, id2, users);
             // TODO: Implement the command here!
 
         } else if(command == "P" or command == "p"){
@@ -58,7 +137,8 @@ int main()
                 continue;
             }
             std::string id = parts.at(1);
-
+            int dots = 0;
+            print(id, users, dots);
             // TODO: Implement the command here!
 
         } else if(command == "C" or command == "c"){
@@ -67,7 +147,8 @@ int main()
                 continue;
             }
             std::string id = parts.at(1);
-
+            int amount = 0;
+            cout << count(id, users, amount) << endl;
             // TODO: Implement the command here!
 
         } else if(command == "D" or command == "d"){
@@ -76,7 +157,8 @@ int main()
                 continue;
             }
             std::string id = parts.at(1);
-
+            int depth_amount = 1;
+            cout << depth(id, users, depth_amount) << endl;
             // TODO: Implement the command here!
 
         } else if(command == "Q" or command == "q"){
