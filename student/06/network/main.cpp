@@ -53,8 +53,9 @@ void print (string user, map<string, vector<string>> users, int& dots){
         dots -= 2;
         return;
     }
-
+    int current_dots = dots;
     for(auto name : users.at(user)){
+        dots = current_dots;
         cout << string(dots, '.') << name << endl;
         if (users.find(name) == users.end()){
             if (dots > 2){
