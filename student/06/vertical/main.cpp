@@ -11,8 +11,11 @@ void print_vertical(unsigned int num)
     // Do not remove RECURSIVE_FUNC declaration, it's necessary for automatic testing to work
     // ------------
     if (num < 10){
+        cout << num << endl;
+    }
+    else{
+        print_vertical(num / 10);
         cout << num % 10 << endl;
-        return;
     }
     // Add your implementation here
 }
