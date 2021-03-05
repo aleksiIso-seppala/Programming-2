@@ -89,23 +89,18 @@ int count (string user, map<string, vector<string>> users, int& network_size){
     return network_size;
 }
 
-int depth (string user, map<string, vector<string>> users, int& depth_amount){
+int depth (string user, map<string, vector<string>> users, int depth_amount = 1){
 
+    int max_depth = depth_amount;
     if (users.find(user) == users.end()){
-        return 1;
+        return max_depth;
     }
-    depth_amount += 1;
-    for (auto name : users.at(user)){
-        if (users.find(name) == users.end()){
-            continue;
-        }
-        else{
-            depth_amount += 1;
-            depth(name, users, depth_amount);
-        }
+    for (const string& name : users.at(user)){
+        int current_depth = depth(name, users, depth_amount + 1);
+        max_depth = max(max_depth, current_depth);
     }
 
-    return depth_amount;
+    return max_depth;
 }
 
 int main()
