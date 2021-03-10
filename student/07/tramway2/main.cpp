@@ -39,7 +39,16 @@ std::vector<std::string> split(const std::string& s, const char delimiter = ';',
     }
     return result;
 }
+void upper(string& line){
 
+    string line_in_upper;
+    for (char character : line){
+        char c;
+        c =toupper(character);
+        line_in_upper += c;
+    }
+    line = line_in_upper;
+}
 bool read_and_check_input(map <string, map<string, double>>& lines){
 
     string filename;
@@ -55,8 +64,9 @@ bool read_and_check_input(map <string, map<string, double>>& lines){
         string line;
         while ( getline(file, line)){
             vector<string> line_split = split(line);
-            if (line_split.size()  > 3){
+            if (line_split.size()  > 3 or line_split.size() < 2){
                 file.close();
+                cout << "Error: Invalid format in file." << endl;
                 return false;
             }
             if (line_split.size() == 2){
@@ -77,6 +87,7 @@ bool read_and_check_input(map <string, map<string, double>>& lines){
             // check that there are no two same stops in a route
             if (lines.at(route).find(stop) != lines.at(route).end()){
                 file.close();
+                cout << "Error: Stop/line already exists." << endl;
                 return false;
             }
 
@@ -84,6 +95,7 @@ bool read_and_check_input(map <string, map<string, double>>& lines){
             for (auto pair : lines.at(route)){
                 if (pair.second == distance){
                     file.close();
+                    cout << "Error: Stop/line already exists." << endl;
                     return false;
                 }
             }
@@ -100,11 +112,73 @@ bool read_and_check_input(map <string, map<string, double>>& lines){
 int main()
 {
     print_rasse();
-    map <string, map<string, double>> lines;
-    if (not read_and_check_input(lines)){
+    map <string, map<string, double>> routes;
+    if (not read_and_check_input(routes)){
         return EXIT_FAILURE;
     }
 
+    while(true){
+        string line;
+        cout << "tramway> ";
+        getline(cin, line);
+        vector<string> parts = split(line);
+        upper(parts.at(0));
+        string command = parts.at(0);
+
+        if (command == "LINES"){
+
+        }
+
+        if (command == "LINE"){
+            if (parts.size() < 2){
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+        }
+
+        if (command == "STOPS"){
+
+        }
+
+        if (command == "STOP"){
+            if (parts.size() < 2){
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+        }
+
+        if (command == "DISTANCE"){
+            if (parts.size() < 4){
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+        }
+
+        if (command == "ADDLINE"){
+            if (parts.size() < 2){
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+        }
+
+        if (command == "ADDSTOP"){
+            if (parts.size() < 4){
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+        }
+
+        if (command == "REMOVE"){
+            if (parts.size() < 2){
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+        }
+
+        if (command == "QUIT"){
+            break;
+        }
+    }
 
 
     return EXIT_SUCCESS;
