@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include "stop.hh"
 
 using namespace std;
 // The most magnificent function in this whole program.
@@ -49,7 +50,7 @@ void upper(string& line){
     }
     line = line_in_upper;
 }
-bool read_and_check_input(map <string, map<string, double>>& lines){
+bool read_and_check_input(map <string, vector<Stop>>& lines){
 
     string filename;
     cout << "Give a name for input file: ";
@@ -79,28 +80,30 @@ bool read_and_check_input(map <string, map<string, double>>& lines){
             string route = line_split.at(0);
             string stop = line_split.at(1);
             double distance = stod(line_split.at(2));
-            map<string, double> empty_map;
+            vector<Stop> empty_vector;
             if (lines.find(route) == lines.end()){
-                lines.insert({route, empty_map});
+                lines.insert({route, empty_vector});
             }
-
             // check that there are no two same stops in a route
-            if (lines.at(route).find(stop) != lines.at(route).end()){
-                file.close();
-                cout << "Error: Stop/line already exists." << endl;
-                return false;
-            }
-
-            // check that there are no two same distances in a route
-            for (auto pair : lines.at(route)){
-                if (pair.second == distance){
+            for(unsigned long int i=0; i < lines.at(route).size(); i++){
+                if (lines.at(route).at(i).get_name() == stop ){
                     file.close();
                     cout << "Error: Stop/line already exists." << endl;
                     return false;
                 }
             }
 
-            lines.at(route).insert({stop, distance});
+            // check that there are no two same distances in a route
+            for (unsigned long int i=0; i < lines.at(route).size(); i++){
+                if (lines.at(route).at(i).get_distance(route) == distance){
+                    file.close();
+                    cout << "Error: Stop/line already exists." << endl;
+                    return false;
+                }
+            }
+            Stop new_stop = Stop(stop);
+            new_stop.add_stop(route, distance);
+            lines.at(route).push_back(new_stop);
         }
 
     }
@@ -108,11 +111,26 @@ bool read_and_check_input(map <string, map<string, double>>& lines){
     return true;
 }
 
+void print_lines(map <string, vector<Stop>> routes){
+
+    cout << "All tramlines in alphabetical order:" << endl;
+    for (auto route : routes){
+        cout << route.first << endl;
+    }
+}
+
+void print_single_line(map <string, vector<Stop>> routes, string route){
+
+    for(unsigned long int i=0; i < routes.at(route).size(); i++){
+        cout << routes.at(route).at(i).get_name() << " : " <<
+                routes.at(route).at(i).get_distance(route) << endl;
+    }
+}
 // Short and sweet main.
 int main()
 {
     print_rasse();
-    map <string, map<string, double>> routes;
+    map <string, vector<Stop>> routes;
     if (not read_and_check_input(routes)){
         return EXIT_FAILURE;
     }
@@ -121,62 +139,73 @@ int main()
         string line;
         cout << "tramway> ";
         getline(cin, line);
-        vector<string> parts = split(line);
+        vector<string> parts = split(line, ' ');
         upper(parts.at(0));
         string command = parts.at(0);
 
         if (command == "LINES"){
+            print_lines(routes);
+        }
+
+        else if (command == "LINE"){
+            if (parts.size() < 2){
+                cout << "Error: Invalid input." << endl;
+                continue;
+            }
+            string line = parts.at(1);
+            if (routes.find(line) == routes.end()){
+                cout << "Error: Line could not be found." << endl;
+                continue;
+            }
+            print_single_line(routes, line);
+        }
+
+        else if (command == "STOPS"){
 
         }
 
-        if (command == "LINE"){
+        else if (command == "STOP"){
             if (parts.size() < 2){
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
         }
 
-        if (command == "STOPS"){
-
-        }
-
-        if (command == "STOP"){
-            if (parts.size() < 2){
-                cout << "Error: Invalid input." << endl;
-                continue;
-            }
-        }
-
-        if (command == "DISTANCE"){
+        else if (command == "DISTANCE"){
             if (parts.size() < 4){
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
         }
 
-        if (command == "ADDLINE"){
+        else if (command == "ADDLINE"){
             if (parts.size() < 2){
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
         }
 
-        if (command == "ADDSTOP"){
+        else if (command == "ADDSTOP"){
             if (parts.size() < 4){
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
         }
 
-        if (command == "REMOVE"){
+        else if (command == "REMOVE"){
             if (parts.size() < 2){
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
         }
 
-        if (command == "QUIT"){
+        else if (command == "QUIT"){
             break;
+        }
+
+        else{
+            cout << "Error: Invalid input." << endl;
+            continue;
         }
     }
 

@@ -52,8 +52,10 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = main.cpp 
-OBJECTS       = main.o
+SOURCES       = main.cpp \
+		stop.cpp 
+OBJECTS       = main.o \
+		stop.o
 DIST          = /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/common/unix.conf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/common/linux.conf \
@@ -238,6 +240,7 @@ DIST          = /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/spec_pre.p
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
@@ -251,7 +254,8 @@ DIST          = /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/spec_pre.p
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/exceptions.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/yacc.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/lex.prf \
-		tramway.pro  main.cpp
+		tramway.pro stop.hh main.cpp \
+		stop.cpp
 QMAKE_TARGET  = tramway
 DESTDIR       = 
 TARGET        = tramway
@@ -447,6 +451,7 @@ Makefile: tramway.pro /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/linux-g++/qma
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/toolchain.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/default_pre.prf \
@@ -646,6 +651,7 @@ Makefile: tramway.pro /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/linux-g++/qma
 /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/qt_config.prf:
 /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/linux-g++/qmake.conf:
 /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/exclusive_builds.prf:
 /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/toolchain.prf:
 /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/default_pre.prf:
@@ -703,8 +709,11 @@ compiler_clean:
 
 ####### Compile
 
-main.o: main.cpp 
+main.o: main.cpp stop.hh
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
+
+stop.o: stop.cpp stop.hh
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o stop.o stop.cpp
 
 ####### Install
 
