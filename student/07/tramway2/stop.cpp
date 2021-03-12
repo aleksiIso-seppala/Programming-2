@@ -20,3 +20,7 @@ void Stop::add_stop(std::string route, double distance){
     distances_.insert({route, distance});
     return;
 }
+
+std::map<std::string, double> Stop::get_map(){
+    return distances_;
+}

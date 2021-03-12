@@ -15,6 +15,8 @@ public:
     double get_distance(std::string route);
 
     void add_stop(std::string route, double distance);
+
+    std::map<std::string, double> get_map();
 private:
 
     std::string name_;
