@@ -53,9 +53,9 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = main.cpp \
-		stop.cpp 
+		route.cpp 
 OBJECTS       = main.o \
-		stop.o
+		route.o
 DIST          = /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/common/unix.conf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/common/linux.conf \
@@ -254,8 +254,8 @@ DIST          = /opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/spec_pre.p
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/exceptions.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/yacc.prf \
 		/opt/lintula/Qt/5.14.2/5.14.2/gcc_64/mkspecs/features/lex.prf \
-		tramway.pro stop.hh main.cpp \
-		stop.cpp
+		tramway.pro route.hh main.cpp \
+		route.cpp
 QMAKE_TARGET  = tramway
 DESTDIR       = 
 TARGET        = tramway
@@ -709,11 +709,12 @@ compiler_clean:
 
 ####### Compile
 
-main.o: main.cpp stop.hh
+main.o: main.cpp stop.hh \
+		route.hh
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-stop.o: stop.cpp stop.hh
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o stop.o stop.cpp
+route.o: route.cpp route.hh
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o route.o route.cpp
 
 ####### Install
 

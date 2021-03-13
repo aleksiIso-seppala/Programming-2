@@ -2,23 +2,20 @@
 #define STOP_HH
 #endif // STOP_HH
 #include <string>
-#include <map>
+
 class Stop
 {
 public:
 
-    Stop(std::string name);
+    Stop(std::string name, double distance);
 
     // below are the methods used
     std::string get_name();
 
-    double get_distance(std::string route);
+    double get_distance();
 
-    void add_stop(std::string route, double distance);
-
-    std::map<std::string, double> get_map();
 private:
 
     std::string name_;
-    std::map<std::string, double> distances_;
+    double distance_;
 };

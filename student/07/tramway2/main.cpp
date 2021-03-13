@@ -2,8 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include "stop.hh"
 #include <set>
+#include "route.hh"
 
 using namespace std;
 // The most magnificent function in this whole program.
@@ -52,24 +52,25 @@ void upper(string& line){
     line = line_in_upper;
 }
 
-bool check_input(map<string, vector<Stop>>& routes, string route, string stop, double distance){
+bool check_input(map<string, Route> routes, string route, string stop, double distance){
 
     // check that there are no two same stops in a route
-    for(unsigned long int i=0; i < routes.at(route).size(); i++){
-        if (routes.at(route).at(i).get_name() == stop ){
-            return false;
-        }
+    map<string, double> map = routes.at(route).get_map();
+
+    if (map.find(stop) != map.end() ){
+        return false;
     }
 
+
     // check that there are no two same distances in a route
-    for (unsigned long int i=0; i < routes.at(route).size(); i++){
-        if (routes.at(route).at(i).get_distance(route) == distance){
+    for (auto stop : map){
+        if (stop.second == distance){
             return false;
         }
     }
     return true;
 }
-bool read_input(map <string, vector<Stop>>& routes){
+bool read_input(map <string, Route>& routes){
 
     string filename;
     cout << "Give a name for input file: ";
@@ -99,19 +100,20 @@ bool read_input(map <string, vector<Stop>>& routes){
             string route = line_split.at(0);
             string stop = line_split.at(1);
             double distance = stod(line_split.at(2));
-            vector<Stop> empty_vector;
-            if (routes.find(route) == routes.end()){
-                routes.insert({route, empty_vector});
-            }
 
+            // if route is not found, a new one is created
+            if (routes.find(route) == routes.end()){
+                Route new_route = Route(route);
+                routes.insert({route, new_route});
+            }
+            // checking the input so that it is valid
             if(not check_input(routes, route, stop, distance)){
                 cout << " Error: Stop/line already exists." << endl;
                 file.close();
                 return false;
             }
-            Stop new_stop = Stop(stop);
-            new_stop.add_stop(route, distance);
-            routes.at(route).push_back(new_stop);
+
+            routes.at(route).add_stop(stop, distance);
         }
 
     }
@@ -119,7 +121,7 @@ bool read_input(map <string, vector<Stop>>& routes){
     return true;
 }
 
-void print_lines(map <string, vector<Stop>> routes){
+void print_lines(map <string, Route> routes){
 
     cout << "All tramlines in alphabetical order:" << endl;
     for (auto route : routes){
@@ -127,24 +129,25 @@ void print_lines(map <string, vector<Stop>> routes){
     }
 }
 
-void print_single_line(map <string, vector<Stop>> routes, string route){
+void print_single_line(map<string, Route> routes, string route){
 
     cout << "Line " << route <<
             " goes through these stops in the order they are listed:" << endl;
-    for(unsigned long int i=0; i < routes.at(route).size(); i++){
-        cout << "- " << routes.at(route).at(i).get_name() << " : " <<
-                routes.at(route).at(i).get_distance(route) << endl;
+
+    map<double,string> distance_map = routes.at(route).get_distance_map();
+    for(auto stop : distance_map){
+        cout << stop.first << " : " << stop.second << endl;
     }
 }
 
-void print_stops(map<string, vector<Stop>> routes){
+void print_stops(map<string, Route> routes){
 
     set<string> stops_in_set;
 
     for (auto route : routes){
-        for(unsigned long int i=0; i < route.second.size(); i++){
-            if (stops_in_set.find(route.second.at(i).get_name()) == stops_in_set.end()){
-                stops_in_set.insert(route.second.at(i).get_name());
+        for(auto stop : route.second.get_map()){
+            if (stops_in_set.find(stop.first) == stops_in_set.end()){
+                stops_in_set.insert(stop.first);
             }
 
         }
@@ -155,112 +158,114 @@ void print_stops(map<string, vector<Stop>> routes){
     }
 }
 
-void stop(map<string, vector<Stop>> routes, string stop){
+void stop(map<string, Route> routes, string stop){
 
 
-    // because we can't access a single stop without a route
-    // we need to find a route which has the stop
-    map<string, double> stops;
+    bool stop_found = false;
     for (auto route : routes){
-        for(unsigned long int i=0; i < route.second.size(); i++){
 
-            // if the stop is found, the correct things are printed
-            // and the function ends.
-            if (route.second.at(i).get_name() == stop){
-                map<string, double> stops = route.second.at(i).get_map();
+            // if the stop is found, the corresponding line
+            // is printed
+            if (route.second.get_map().find(stop) != route.second.get_map().end()){
 
-                cout << "Stop " << stop << " can be found on the following lines:" << endl;
-                for (auto line : stops){
-                    cout << "- " << line.first << endl;
+                // this is to ensure that the text is printed only once
+                if(not stop_found){
+                    cout << "Stop " << stop << " can be found on the following lines:" << endl;
                 }
-                return;
+                cout << "- " << route.first << endl;
+                stop_found = true;
+                continue;
             }
-        }
     }
-    cout << "Stop could not be found" << endl;
-    return;
+    // if a stop is not found, the following text is printed
+    if(not stop_found){
+        cout << "Stop could not be found" << endl;
+        return;
+    }
 
 }
 
-void distance(map<string, vector<Stop>> routes, string route, string stop_1, string stop_2){
+void distance(map<string, Route> routes, string route, string stop_1, string stop_2){
 
-    double stop_1_distance;
-    double stop_2_distance;
-    for (unsigned long int i=0; i < routes.at(route).size(); i++){
-        if (routes.at(route).at(i).get_name() == stop_1){
-            stop_1_distance = routes.at(route).at(i).get_distance(route);
-        }
-        if (routes.at(route).at(i).get_name() == stop_2){
-            stop_2_distance = routes.at(route).at(i).get_distance(route);
-        }
-    }
+    map<string, double> map = routes.at(route).get_map();
     cout << "Distance between " << stop_1 << " and " << stop_2 << " is " <<
-            abs(stop_1_distance-stop_2_distance) << endl;
+            abs(map.at(stop_1)-map.at(stop_2)) << endl;
 }
 
-void add_line(map<string, vector<Stop>>& routes, string route){
+void add_route(map<string, Route>& routes, string route){
 
     if (routes.find(route) != routes.end()){
         cout << "Error: Stop/line already exists." << endl;
         return;
     }
-
-    vector<Stop> empty_vector;
-    routes.insert({route, empty_vector});
+    Route new_route = Route(route);
+    routes.insert({route, new_route});
     cout << "Line was added." << endl;
 }
 
-void add_stop(map<string, vector<Stop>>& routes,string route,string stop,double distance){
+void add_stop(map<string, Route>& routes,string route,string stop,double distance){
 
     if(not check_input(routes, route, stop, distance)){
         cout << " Error: Stop/line already exists." << endl;
         return;
     }
-
-    // Check if the stop already exists as an object
-    bool stop_exist = false;
-    for (auto route : routes){
-        for(unsigned long int i=0; i < route.second.size(); i++){
-
-            // if the stop exists, we can just modify the object
-            if (route.second.at(i).get_name() == stop and stop_exist == false){
-                stop_exist = true;
-                route.second.at(i).add_stop(route.first, distance);
-                break;
-            }
-        }
-    }
-
-    // if the stop doesn't exist, we need to add a new object
-    if (not stop_exist){
-        Stop new_stop = Stop(stop);
-        new_stop.add_stop(route, distance);
-    }
-
-    // now we need to add the new stop to the correct place in the vector
-    for (unsigned long int i=0; i<routes.at(route).size(); i++){
-        if(routes.at(route).at(i).get_name() == stop){
-
-        }
-    }
-
-
+    routes.at(route).add_stop(stop, distance);
+    cout << "Stop was added." << endl;
 
 }
+
+void remove(map<string, Route>& routes, string stop){
+
+    // going through all the routes to find, which
+    // ones have the stop to be removed. If one is
+    // found, the stop is removed.
+    bool stop_removed = false;
+
+    for (auto route : routes){
+        map<string, double> map = route.second.get_map();
+        if (map.find(stop) != map.end()){
+            routes.at(route.first).remove_stop(stop);
+            stop_removed = true;
+            continue;
+        }
+        else{
+            continue;
+        }
+    }
+
+    // if no stops were removed, prints the correct text
+    if (not stop_removed){
+        cout << "Error: Stop could not be found." << endl;
+        return;
+    }
+    cout << "Stop was removed from all lines." << endl;
+}
+
+vector<string> split_line_correctly(string line){
+
+    vector<string> parts = split(line, ' ');
+    vector<string> two_part_names = split(line, '"');
+
+    if(two_part_names.size() <= 1){
+        return parts;
+    }
+
+    return two_part_names;
+}
+
 // Short and sweet main.
 int main()
 {
     print_rasse();
-    map <string, vector<Stop>> routes;
+    map <string, Route> routes;
     if (not read_input(routes)){
         return EXIT_FAILURE;
     }
-
     while(true){
         string line;
         cout << "tramway> ";
         getline(cin, line);
-        vector<string> parts = split(line, ' ');
+        vector<string> parts = split_line_correctly(line);
         upper(parts.at(0));
         string command = parts.at(0);
 
@@ -273,12 +278,12 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-            string line = parts.at(1);
-            if (routes.find(line) == routes.end()){
+            string route = parts.at(1);
+            if (routes.find(route) == routes.end()){
                 cout << "Error: Line could not be found." << endl;
                 continue;
             }
-            print_single_line(routes, line);
+            print_single_line(routes, route);
         }
 
         else if (command == "STOPS"){
@@ -310,7 +315,7 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-            add_line(routes, parts.at(1));
+            add_route(routes, parts.at(1));
         }
 
         else if (command == "ADDSTOP"){
@@ -318,6 +323,9 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
+
+            double distance = stod(parts.at(3));
+            add_stop(routes, parts.at(1), parts.at(2), distance);
         }
 
         else if (command == "REMOVE"){
@@ -325,6 +333,7 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
+            remove(routes, parts.at(1));
         }
 
         else if (command == "QUIT"){
