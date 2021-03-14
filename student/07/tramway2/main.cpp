@@ -247,7 +247,14 @@ void distance(map<string, Route> routes, string route, string stop_1, string sto
     map<string, double> map = routes.at(route).get_map();
     double stop_1_distance = map.at(stop_1);
     double stop_2_distance = map.at(stop_2);
-    double distance = abs(stop_1_distance - stop_2_distance);
+    double distance;
+
+    if (stop_1_distance > stop_2_distance){
+        distance = stop_1_distance - stop_2_distance;
+    }
+    else{
+        distance = stop_2_distance - stop_1_distance;
+    }
 
     cout << "Distance between " << stop_1 << " and " << stop_2 << " is " <<
             distance << endl;
