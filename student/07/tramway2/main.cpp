@@ -245,8 +245,12 @@ void print_stop(map<string, Route> routes, string stop){
 void distance(map<string, Route> routes, string route, string stop_1, string stop_2){
 
     map<string, double> map = routes.at(route).get_map();
+    double stop_1_distance = map.at(stop_1);
+    double stop_2_distance = map.at(stop_2);
+    double distance = abs(stop_1_distance - stop_2_distance);
+
     cout << "Distance between " << stop_1 << " and " << stop_2 << " is " <<
-            abs(map.at(stop_1)-map.at(stop_2)) << endl;
+            distance << endl;
 }
 
 
