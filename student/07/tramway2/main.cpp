@@ -236,7 +236,7 @@ void print_stop(map<string, Route> routes, string stop){
     }
     // if a stop is not found, the following text is printed
     if(not stop_found){
-        cout << "Stop could not be found" << endl;
+        cout << "Error: Stop could not be found" << endl;
         return;
     }
 
