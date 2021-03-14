@@ -1,3 +1,33 @@
+/* Tramways
+ *
+ * Description:
+ * the program implements an user interface for tramways.
+ * The tramways are read from a file and stored in a
+ * data structure. After that the user can do various
+ * things by writing different commands to the interface.
+ * The program checks all the users input and ends when
+ * the users inputs the quit command. The program also ends
+ * if the input file is not valid.
+ *
+ * The user can print all tramway routes, print all the stops in a
+ * single route and print all the stops in the tramway system.
+ * They can also find out all the routes that have a specific stop
+ * and find out the distance between two stops in a route.
+ *
+ * the user can also edit the tramways in various ways.
+ * the user can add new routes or stops. They can also remove
+ * a stop from all routes.
+ *
+ * Writer of the program
+ * Name : Aleksi Iso-Seppälä
+ * Student-id : H292168
+ * username : fsalis
+ * E-Mail : aleksi.iso-seppala@tuni.fi
+ *
+ * */
+
+
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -22,7 +52,9 @@ void print_rasse()
                  "-------------------------------" << std::endl;
 }
 
-std::vector<std::string> split(const std::string& s, const char delimiter = ';', bool ignore_empty = false){
+// function splits a character line and returns a vector where they are split
+std::vector<std::string> split(const std::string& s,
+                               const char delimiter = ';', bool ignore_empty = false){
     std::vector<std::string> result;
     std::string tmp = s;
 
@@ -41,6 +73,9 @@ std::vector<std::string> split(const std::string& s, const char delimiter = ';',
     }
     return result;
 }
+
+// function changes all the characters in an input
+// to upper characters
 void upper(string& line){
 
     string line_in_upper;
@@ -52,7 +87,11 @@ void upper(string& line){
     line = line_in_upper;
 }
 
-bool check_input(map<string, Route> routes, string route, string stop, double distance){
+
+// checks whether an input is valid. The input cannot have
+// an already existing distance or name in the route
+bool is_valid_input(map<string, Route> routes,
+                    string route, string stop, double distance){
 
     // check that there are no two same stops in a route
     map<string, double> map = routes.at(route).get_map();
@@ -70,6 +109,10 @@ bool check_input(map<string, Route> routes, string route, string stop, double di
     }
     return true;
 }
+
+// reads the file given in a input
+// and adds the routes and stops to
+// the corresponding data structures
 bool read_input(map <string, Route>& routes){
 
     string filename;
@@ -107,7 +150,7 @@ bool read_input(map <string, Route>& routes){
                 routes.insert({route, new_route});
             }
             // checking the input so that it is valid
-            if(not check_input(routes, route, stop, distance)){
+            if(not is_valid_input(routes, route, stop, distance)){
                 cout << " Error: Stop/line already exists." << endl;
                 file.close();
                 return false;
@@ -121,7 +164,9 @@ bool read_input(map <string, Route>& routes){
     return true;
 }
 
-void print_lines(map <string, Route> routes){
+
+// prints all the routes in alphabetical order
+void print_routes(map <string, Route> routes){
 
     cout << "All tramlines in alphabetical order:" << endl;
     for (auto route : routes){
@@ -129,21 +174,29 @@ void print_lines(map <string, Route> routes){
     }
 }
 
-void print_single_line(map<string, Route> routes, string route){
+// prints all the stops in a single route.
+// the stops are printed in order of distance
+void print_single_route(map<string, Route> routes, string route){
 
     cout << "Line " << route <<
-            " goes through these stops in the order they are listed:" << endl;
+            " goes through these stops"
+            " in the order they are listed:" << endl;
 
     map<double,string> distance_map = routes.at(route).get_distance_map();
     for(auto stop : distance_map){
-        cout << stop.first << " : " << stop.second << endl;
+        cout << " - " << stop.second << " : " << stop.first << endl;
     }
 }
 
+// prints all stops in ASCII-order
 void print_stops(map<string, Route> routes){
 
+    // the set is needed for storing the stops
+    // in correct order.
     set<string> stops_in_set;
 
+    // going through all the stops in the loop
+    // and adding new ones to the set
     for (auto route : routes){
         for(auto stop : route.second.get_map()){
             if (stops_in_set.find(stop.first) == stops_in_set.end()){
@@ -152,27 +205,31 @@ void print_stops(map<string, Route> routes){
 
         }
     }
+
+    // printing the stops from the set
     cout << "All stops in alphabetical order:" << endl;
     for (auto stop : stops_in_set){
         cout << stop << endl;
     }
 }
 
-void stop(map<string, Route> routes, string stop){
+
+// prints all the routes in which a specific stop is in
+void print_stop(map<string, Route> routes, string stop){
 
 
     bool stop_found = false;
     for (auto route : routes){
-
+            map<string, double> map = route.second.get_map();
             // if the stop is found, the corresponding line
             // is printed
-            if (route.second.get_map().find(stop) != route.second.get_map().end()){
+            if (map.find(stop) != map.end()){
 
                 // this is to ensure that the text is printed only once
                 if(not stop_found){
                     cout << "Stop " << stop << " can be found on the following lines:" << endl;
                 }
-                cout << "- " << route.first << endl;
+                cout << " - " << route.first << endl;
                 stop_found = true;
                 continue;
             }
@@ -184,7 +241,7 @@ void stop(map<string, Route> routes, string stop){
     }
 
 }
-
+// prints the distance between two stops in a route
 void distance(map<string, Route> routes, string route, string stop_1, string stop_2){
 
     map<string, double> map = routes.at(route).get_map();
@@ -192,6 +249,9 @@ void distance(map<string, Route> routes, string route, string stop_1, string sto
             abs(map.at(stop_1)-map.at(stop_2)) << endl;
 }
 
+
+// adds a new route to the route map.
+// also creates a new route object.
 void add_route(map<string, Route>& routes, string route){
 
     if (routes.find(route) != routes.end()){
@@ -203,17 +263,23 @@ void add_route(map<string, Route>& routes, string route){
     cout << "Line was added." << endl;
 }
 
+// adds a stop to a specific route. The new stop and distance go
+// through check_input function to ensure valid inputs
 void add_stop(map<string, Route>& routes,string route,string stop,double distance){
 
-    if(not check_input(routes, route, stop, distance)){
+    // checking whether the input is valid.
+    if(not is_valid_input(routes, route, stop, distance)){
         cout << " Error: Stop/line already exists." << endl;
         return;
     }
+
+    // adding the stop to the route
     routes.at(route).add_stop(stop, distance);
     cout << "Stop was added." << endl;
 
 }
 
+// function removes a stop from all routes.
 void remove(map<string, Route>& routes, string stop){
 
     // going through all the routes to find, which
@@ -241,16 +307,66 @@ void remove(map<string, Route>& routes, string stop){
     cout << "Stop was removed from all lines." << endl;
 }
 
+// function splits the line correctly, accounting for
+// stop and route names with multiple words
 vector<string> split_line_correctly(string line){
 
     vector<string> parts = split(line, ' ');
-    vector<string> two_part_names = split(line, '"');
+    vector<string> parts_to_return;
 
-    if(two_part_names.size() <= 1){
-        return parts;
+    string word;
+    string word_string;
+
+    // going through the split words, and finding the ones
+    // which have quotation marks.
+    for (unsigned int i=0 ; i<parts.size(); i++){
+        word = parts.at(i);
+
+        // if the words first letter is a quotation mark
+        // we need check if it also end in a quotation mark.
+        // if it doesnt, we can just add the word to the word_string
+        // with the quotation marks removed.
+        if(word.at(0) == '"'){
+            if(word.at(word.size()-1) == '"'){
+                word.erase(word.begin());
+                word.pop_back();
+                parts_to_return.push_back(word);
+                continue;
+            }
+            else{
+                word.erase(word.begin());
+                word_string += word;
+                continue;
+            }
+        }
+
+        // if the word ends in a quotation mark,
+        // we can remove it and add the rest of the word
+        // to the word_string. The string is then added to
+        // the parts_to_return.
+        if(word.at(word.size()-1) == '"'){
+            word.pop_back();
+            word_string += " " + word;
+            parts_to_return.push_back(word_string);
+            word_string = "";
+            continue;
+
+        }
+
+        // if the word doesn't have quotation marks,
+        // we need to check whether word_string is
+        // empty. If it isn't, we can add it to the word_string
+        else{
+            if (word_string == ""){
+                parts_to_return.push_back(word);
+            }
+            else{
+                word_string += " " + word;
+            }
+        }
     }
+    return parts_to_return;
 
-    return two_part_names;
 }
 
 // Short and sweet main.
@@ -261,16 +377,22 @@ int main()
     if (not read_input(routes)){
         return EXIT_FAILURE;
     }
+
+    // this main loop is looped as long as the user
+    // enters the quit command.
     while(true){
         string line;
         cout << "tramway> ";
         getline(cin, line);
+
+        // the given line is split into parts, which are then
+        // used in the commands
         vector<string> parts = split_line_correctly(line);
         upper(parts.at(0));
         string command = parts.at(0);
 
         if (command == "LINES"){
-            print_lines(routes);
+            print_routes(routes);
         }
 
         else if (command == "LINE"){
@@ -283,7 +405,7 @@ int main()
                 cout << "Error: Line could not be found." << endl;
                 continue;
             }
-            print_single_line(routes, route);
+            print_single_route(routes, route);
         }
 
         else if (command == "STOPS"){
@@ -295,7 +417,8 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-            stop(routes, parts.at(1));
+            string stop = parts.at(1);
+            print_stop(routes, stop);
         }
 
         else if (command == "DISTANCE"){
@@ -303,11 +426,15 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-            if (routes.find(parts.at(1)) == routes.end()){
+
+            string route = parts.at(1);
+            string stop_1 = parts.at(2);
+            string stop_2 = parts.at(3);
+            if (routes.find(route) == routes.end()){
                 cout << "Error: Line could not be found." << endl;
                 continue;
             }
-            distance(routes, parts.at(1), parts.at(2), parts.at(3));
+            distance(routes, route, stop_1, stop_2);
         }
 
         else if (command == "ADDLINE"){
@@ -315,7 +442,8 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-            add_route(routes, parts.at(1));
+            string route = parts.at(1);
+            add_route(routes, route);
         }
 
         else if (command == "ADDSTOP"){
@@ -323,9 +451,11 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-
+            string route = parts.at(1);
+            string stop = parts.at(2);
             double distance = stod(parts.at(3));
-            add_stop(routes, parts.at(1), parts.at(2), distance);
+
+            add_stop(routes, route, stop, distance);
         }
 
         else if (command == "REMOVE"){
@@ -333,7 +463,8 @@ int main()
                 cout << "Error: Invalid input." << endl;
                 continue;
             }
-            remove(routes, parts.at(1));
+            string stop = parts.at(1);
+            remove(routes, stop);
         }
 
         else if (command == "QUIT"){
