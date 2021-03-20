@@ -29,7 +29,8 @@ int main()
     char character;
     string line;
     vector<char> parts;
-    cout << "Input an expression in reverse Polish notation (end with #): ";
+    cout << "Input an expression in reverse Polish notation (end with #):" << endl;
+    cout << "EXPR> ";
     while(true){
         cin >> character;
         if(character == '#'){
