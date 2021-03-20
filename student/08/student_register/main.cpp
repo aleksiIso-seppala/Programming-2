@@ -94,7 +94,7 @@ void change_number(std::map<std::string,Student*> user_id,
                     << s->name << ";"
                     << s->phone_number << ";"
                     << s->email << ";"
-                    << s->skype << ";"
+                    << s->skype
                     << std::endl;
     }
     file_object.close();
@@ -155,7 +155,7 @@ int main() {
                 continue;
             }
 
-            if(student_numbers.find(parts.at(1)) == user_ids.end()){
+            if(student_numbers.find(parts.at(1)) == student_numbers.end()){
                 std::cout << "There is no student with the given number" << std::endl << std::endl;
                 continue;
             }
@@ -163,17 +163,15 @@ int main() {
             std::string phone_number;
             std::cout << "Enter a new phone number: ";
             getline(std::cin, phone_number);
-
+            std::cout << std::endl;
             if(not is_valid_phone_number(phone_number)){
-                std::cout << "Erroneous phone number: " << phone_number << std::endl << std::endl;
                 continue;
             }
-            std::cout << std::endl;
+
             student_numbers.at(parts.at(1))->phone_number = phone_number;
 
             change_number(user_ids, file_name);
 
-            // TODO: Add functionality here
 
 
         } else if(command == "Q" or command == "q") {
