@@ -4,7 +4,7 @@ int greatest_v1(int* itemptr, int size){
 
     int* pointer = nullptr;
     pointer = itemptr;
-    int largest_number;
+    int largest_number = *itemptr;
     while(pointer < itemptr+size){
         if (largest_number < *pointer){
             largest_number = *pointer;
@@ -19,7 +19,7 @@ int greatest_v2(int* itemptr, int* endptr){
 
     int* pointer = nullptr;
     pointer = itemptr;
-    int largest_number = 0;
+    int largest_number = *itemptr;
     while(pointer < endptr){
         if (largest_number < *pointer){
             largest_number = *pointer;
