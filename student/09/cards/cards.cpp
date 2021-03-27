@@ -1,5 +1,4 @@
 #include "cards.hh"
-#include <cassert>
 
 // TODO: Implement the methods here
     Cards::Cards() :
