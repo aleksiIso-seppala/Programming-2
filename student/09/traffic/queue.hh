@@ -36,6 +36,7 @@ private:
     struct Vehicle {
         string reg_num;
         Vehicle* next;
+        Vehicle* prev = nullptr;
     };
 
     // Pointer to the first vehicle in the traffic light queue
@@ -52,6 +53,9 @@ private:
     unsigned int cycle_;
 
     // You can define more private features here
+    int size_;
+    string light_;
+    int current_cycle_;
 
 };
 
