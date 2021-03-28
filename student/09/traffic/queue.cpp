@@ -13,7 +13,7 @@ Queue::Queue(unsigned int cycle) :
 void Queue::enqueue(string reg){
 
     if(light_ == "GREEN"){
-        cout << "Green: The vehicle " << reg << " need not stop to wait" << endl;
+        cout << "GREEN: The vehicle " << reg << " need not stop to wait" << endl;
         --current_cycle_;
         if(current_cycle_ == 0){
             light_ = "RED";
@@ -46,7 +46,7 @@ void Queue::switch_light(){
         light_ = "GREEN";
     }
     if (size_ == 0){
-        std::cout << light_ << " No vehicles waiting in traffic lights" << endl;
+        std::cout << light_ << ": No vehicles waiting in traffic lights" << endl;
         return;
     }
     std::cout << light_ << ": Vehicle(s) ";
@@ -59,12 +59,12 @@ void Queue::switch_light(){
         --current_cycle_;
         std::cout << reg << " ";
         if (current_cycle_ < 1){
-            current_cycle_ = cycle_;
             break;
         }
     }
+    current_cycle_ = cycle_;
     std::cout << "can go on" << std::endl;
-    light_ = "Red";
+    light_ = "RED";
     return;
 
 
