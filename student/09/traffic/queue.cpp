@@ -14,10 +14,6 @@ void Queue::enqueue(string reg){
 
     if(light_ == "GREEN"){
         cout << "GREEN: The vehicle " << reg << " need not stop to wait" << endl;
-        --current_cycle_;
-        if(current_cycle_ == 0){
-            light_ = "RED";
-        }
         return;
     }
 
@@ -57,6 +53,7 @@ void Queue::switch_light(){
         last_ = second;
         --size_;
         --current_cycle_;
+
         std::cout << reg << " ";
         if (current_cycle_ < 1){
             break;
