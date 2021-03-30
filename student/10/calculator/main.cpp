@@ -22,6 +22,17 @@ vector< string > split(const string& s,
 // The implementation of the function uses stringstream for the sake of example.
 bool string_to_double(const string& s, double& result);
 
+void upper(string& line){
+
+    string line_in_upper;
+    for (char character : line){
+        char c;
+        c =toupper(character);
+        line_in_upper += c;
+    }
+    line = line_in_upper;
+}
+
 
 // TODO: Explore the following data structures!
 struct Command {
@@ -57,7 +68,10 @@ const vector<Command> COMMANDS = {
     {"STOP", 0, true, nullptr},
     {"QUIT", 0, true, nullptr},
     {"EXIT", 0, true, nullptr},
-    {"Q", 0, true, nullptr}
+    {"Q", 0, true, nullptr},
+    {"POWER", 2, false, exponent},
+    {"EXP", 2, false, exponent},
+    {"^", 2, false, exponent}
 };
 
 
@@ -86,7 +100,47 @@ int main() {
         }
 
         string command_to_be_executed = pieces.at(0);
+        upper(command_to_be_executed);
+        Command command_to_be_found;
+        bool command_found = false;
+        for (auto command : COMMANDS){
+            if (command_to_be_executed == command.str){
+                command_to_be_found = command;
+                command_found = true;
+            }
+        }
 
+
+
+        if (pieces.size()-1 != command_to_be_found.parameter_number){
+            cout << "Error: wrong number of parameters." << endl;
+            continue;
+        }
+
+        if (not command_found){
+            cout << "Error: unknown command." << endl;
+            continue;
+        }
+
+        if (command_to_be_found.action == nullptr){
+            cout << GREETING_AT_END << endl;
+            break;
+        }
+
+        string parameter_1 = pieces.at(1);
+        string parameter_2 = pieces.at(2);
+        double in_double_1;
+        double in_double_2;
+        if (not string_to_double(parameter_1, in_double_1)){
+            cout << "Error: a non-number operand." << endl;
+            continue;
+        }
+        if (not string_to_double(parameter_2, in_double_2)){
+            cout << "Error: a non-number operand." << endl;
+            continue;
+        }
+
+        cout << command_to_be_found.action(in_double_1, in_double_2) << endl;
         // TODO: Implement command execution here!
 
     }
