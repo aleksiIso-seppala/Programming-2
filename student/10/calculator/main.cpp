@@ -110,17 +110,17 @@ int main() {
             }
         }
 
-
+        if (not command_found){
+            cout << "Error: unknown command." << endl;
+            continue;
+        }
 
         if (pieces.size()-1 != command_to_be_found.parameter_number){
             cout << "Error: wrong number of parameters." << endl;
             continue;
         }
 
-        if (not command_found){
-            cout << "Error: unknown command." << endl;
-            continue;
-        }
+
 
         if (command_to_be_found.action == nullptr){
             cout << GREETING_AT_END << endl;
