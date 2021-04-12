@@ -36,26 +36,55 @@ void Hospital::recruit(Params params)
 
 void Hospital::enter(Params params)
 {
-    std::string name = params.at(0);
-    if (current_patients_.find(name) != current_patients_.end()){
+    std::string patient = params.at(0);
+    if (current_patients_.find(patient) != current_patients_.end()){
+        std::cout << ALREADY_EXISTS << patient << std::endl;
         return;
     }
 
-    if (all_patients_.find(name) == all_patients_.end()){
-        Person* new_patient = new Person(name);
-        all_patients_.insert({name, new_patient});
+    if (all_patients_.find(patient) == all_patients_.end()){
+        Person* new_patient = new Person(patient);
+        all_patients_.insert({patient, new_patient});
     }
-    current_patients_.insert({name, all_patients_.at(name)});
-    CarePeriod* new_careperiod = new CarePeriod(utils::today, current_patients_.at(name));
+
+    current_patients_.insert({patient, all_patients_.at(patient)});
+    CarePeriod* new_careperiod = new CarePeriod(utils::today, current_patients_.at(patient));
+
+    std::vector<CarePeriod*> empty_vector;
+    care_periods_.insert({patient, empty_vector});
+    care_periods_.at(patient).push_back(new_careperiod);
+    std::cout << PATIENT_ENTERED << std::endl;
 }
 
 void Hospital::leave(Params params)
 {
+    std::string patient = params.at(0);
+    if (current_patients_.find(patient) == current_patients_.end()){
+        std::cout << CANT_FIND << patient << std::endl;
+        return;
+    }
 
+    care_periods_.at(patient).back()->close_period();
+    current_patients_.erase(patient);
+    std::cout << PATIENT_LEFT << std::endl;
 }
 
 void Hospital::assign_staff(Params params)
 {
+    std::string staff = params.at(0);
+    std::string patient = params.at(1);
+
+    if (staff_.find(staff) == staff_.end()){
+        std::cout << CANT_FIND << staff << std::endl;
+        return;
+    }
+
+    if (current_patients_.find(patient) == current_patients_.end()){
+        std::cout << CANT_FIND << patient << std::endl;
+        return;
+    }
+
+    care_periods_.at(patient).back()->assign_staff(staff);
 
 }
 

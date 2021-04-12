@@ -14,3 +14,13 @@ CarePeriod::CarePeriod(const Date &start, Person* patient):
 CarePeriod::~CarePeriod()
 {
 }
+
+void CarePeriod::close_period()
+{
+    end_ = utils::today;
+}
+
+void CarePeriod::assign_staff(std::string staff)
+{
+    assigned_staff_.insert(staff);
+}

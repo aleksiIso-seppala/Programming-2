@@ -15,6 +15,7 @@
 #include "careperiod.hh"
 #include "date.hh"
 #include <map>
+#include <vector>
 
 // Error and information outputs
 const std::string ALREADY_EXISTS = "Error: Already exists: ";
@@ -112,6 +113,7 @@ private:
     std::map<std::string, Person*> current_patients_;
     std::map<std::string, Person*> staff_;
     std::map<std::string, Person*> all_patients_;
+    std::map<std::string, std::vector<CarePeriod*>> care_periods_;
     // More attributes and methods
 };
 

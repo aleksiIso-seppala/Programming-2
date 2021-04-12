@@ -9,9 +9,11 @@
 #ifndef CAREPERIOD_HH
 #define CAREPERIOD_HH
 
+#include "utils.hh"
 #include "person.hh"
 #include "date.hh"
 #include <string>
+#include <set>
 
 class CarePeriod
 {
@@ -27,10 +29,15 @@ public:
 
     // More public methods
 
+    void close_period();
+    void assign_staff(std::string);
+
 private:
     Person* patient_;
     Date start_;
     Date end_;
+
+    std::set<std::string> assigned_staff_;
 
     // More attributes and methods
 };
