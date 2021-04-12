@@ -128,6 +128,25 @@ void Hospital::remove_medicine(Params params)
 
 void Hospital::print_patient_info(Params params)
 {
+    std::string patient = params.at(0);
+
+    if(all_patients_.find(patient) == all_patients_.end()){
+        std::cout << CANT_FIND << patient << std::endl;
+    }
+    for (unsigned int i=0; i<care_periods_.at(patient).size(); i++){
+
+        std::cout << "* Care period: ";
+        care_periods_.at(patient).at(i)->print_start();
+        std::cout << " - ";
+        care_periods_.at(patient).at(i)->print_end();
+        std::cout << std::endl;
+
+        std::cout << "  - Staff:";
+        care_periods_.at(patient).at(i)->print_staff();
+        std::cout << std::endl;
+    }
+    std::cout << "* Medicines:";
+    all_patients_.at(patient)->print_medicines("- ");
 
 }
 
@@ -197,3 +216,5 @@ void Hospital::advance_date(Params params)
     utils::today.print();
     std::cout << std::endl;
 }
+
+

@@ -31,14 +31,17 @@ public:
 
     void close_period();
     void assign_staff(std::string);
+    void print_start();
+    void print_end();
+    void print_staff();
 
 private:
     Person* patient_;
     Date start_;
     Date end_;
+    Date not_set_;
 
     std::set<std::string> assigned_staff_;
-
     // More attributes and methods
 };
 
