@@ -27,15 +27,11 @@ Hospital::~Hospital()
         delete iter->second;
     }
 
-    // Deallocating the struct with the careperiods
-    All_periods* current =last_;
-    while (current != nullptr){
-        All_periods* tmp = current->prev;
-        delete current->care_period;
-        delete current;
-        current = tmp;
+    // Deallocating all care periods.
+    while (care_periods_.size() != 0){
+        delete care_periods_.at(care_periods_.size()-1);
+        care_periods_.pop_back();
     }
-    // Remember to deallocate patients also
 }
 
 void Hospital::recruit(Params params)
@@ -65,26 +61,9 @@ void Hospital::enter(Params params)
     }
 
     current_patients_.insert(patient);
-
-    CarePeriod* new_careperiod = new CarePeriod(utils::today, all_patients_.at(patient));
-
-    /*
+    CarePeriod* new_careperiod = new CarePeriod(utils::today, all_patients_.at(patient));   
     care_periods_.push_back(new_careperiod);
-    /*/
 
-    All_periods* new_struct = new All_periods();
-    new_struct->care_period = new_careperiod;
-    new_struct->next = first_;
-
-    if ( size_ > 0){
-        first_->prev = new_struct;
-    }
-    first_ = new_struct;
-    ++size_;
-
-    if(size_ == 1){
-        last_ = first_;
-    }
     std::cout << PATIENT_ENTERED << std::endl;
 }
 
@@ -98,21 +77,10 @@ void Hospital::leave(Params params)
 
     Date date = utils::today;
 
-    /*
     for(unsigned int i=0;i<care_periods_.size();i++){
         if(care_periods_.at(i)->get_patient() == patient and care_periods_.at(i)->is_open()){
             care_periods_.at(i)->close_period(date);
         }
-    }
-    /*/
-
-    All_periods* current = last_;
-    while (current != nullptr){
-        if (current->care_period->get_patient() == patient and
-                current->care_period->is_open()){
-            current->care_period->close_period(date);
-        }
-        current = current->prev;
     }
     current_patients_.erase(patient);
     std::cout << PATIENT_LEFT << std::endl;
@@ -133,28 +101,15 @@ void Hospital::assign_staff(Params params)
         std::cout << CANT_FIND << patient << std::endl;
         return;
     }
-    /*
+
     unsigned int i = 0;
     for(i=0;i<care_periods_.size();i++){
         if(care_periods_.at(i)->get_patient() == patient and care_periods_.at(i)->is_open()){
+            care_periods_.at(i)->assign_staff(staff);
             break;
         }
     }
-    care_periods_.at(i)->assign_staff(staff);
     std::cout << STAFF_ASSIGNED << patient << std::endl;
-    /*/
-
-    All_periods* current = last_;
-    while (current != nullptr){
-        if (current->care_period->get_patient() == patient and
-                current->care_period->is_open()){
-            current->care_period->assign_staff(staff);
-            std::cout << STAFF_ASSIGNED << patient << std::endl;
-            break;
-        }
-        current = current->prev;
-    }
-
 
 }
 
@@ -204,7 +159,7 @@ void Hospital::print_patient_info(Params params)
         std::cout << CANT_FIND << patient << std::endl;
         return;
     }
-    /*
+
     for (unsigned int i=0; i<care_periods_.size();i++){
 
         if (care_periods_.at(i)->get_patient() == patient){
@@ -219,24 +174,7 @@ void Hospital::print_patient_info(Params params)
             std::cout << std::endl;
         }
     }
-    /*/
 
-    All_periods* current = last_;
-
-    while (current != nullptr){
-        if (current->care_period->get_patient() == patient){
-            std::cout << "* Care period: ";
-            current->care_period->print_start();
-            std::cout << " - ";
-            current->care_period->print_end();
-            std::cout << std::endl;
-
-            std::cout << "  - Staff:";
-            current->care_period->print_staff();
-            std::cout << std::endl;
-        }
-        current = current->prev;
-    }
     std::cout << "* Medicines:";
     all_patients_.at(patient)->print_medicines("  - ");
 }
@@ -253,7 +191,6 @@ void Hospital::print_care_periods_per_staff(Params params)
         return;
     }
 
-    /*
     for (unsigned int i=0; i<care_periods_.size();i++){
         if (care_periods_.at(i)->find_staff(staff_member)){
             care_periods_.at(i)->print_start();
@@ -267,23 +204,7 @@ void Hospital::print_care_periods_per_staff(Params params)
             care_periods_found = true;
         }
     }
-    /*/
 
-    All_periods* current = last_;
-    while(current != nullptr){
-        if (current->care_period->find_staff(staff_member)){
-            current->care_period->print_start();
-            std::cout << " - ";
-            current->care_period->print_end();
-            std::cout << std::endl;
-
-            std::cout << "* Patient: "
-            << current->care_period->get_patient() << std::endl;
-
-            care_periods_found = true;
-        }
-        current = current->prev;
-    }
     if (not care_periods_found){
         std::cout << "None" << std::endl;
     }

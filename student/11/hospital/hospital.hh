@@ -111,15 +111,6 @@ public:
 
 private:
 
-    struct All_periods {
-        CarePeriod* care_period;
-        All_periods* next;
-        All_periods* prev = nullptr;
-    };
-
-    All_periods* first_ = nullptr;
-    All_periods* last_ = nullptr;
-    int size_;
     // Obvious container attributes.
 
     // current_patients_ is now a set to eliminate repeated information
@@ -130,9 +121,7 @@ private:
     std::set<std::string> current_patients_;
     std::map<std::string, Person*> staff_;
     std::map<std::string, Person*> all_patients_;
-    /*
     std::vector<CarePeriod*> care_periods_;
-    /*/
     // More attributes and methods
 };
 
