@@ -250,6 +250,7 @@ void Hospital::print_care_periods_per_staff(Params params)
 
     if (staff_.find(staff_member) == staff_.end()){
         std::cout << CANT_FIND << staff_member << std::endl;
+        return;
     }
 
     /*
@@ -333,6 +334,11 @@ void Hospital::print_all_staff(Params)
 
 void Hospital::print_all_patients(Params)
 {
+    if (all_patients_.empty() ){
+        std::cout << "None" << std::endl;
+        return;
+    }
+
     for (auto patient : all_patients_){
         std::cout << patient.first << std::endl;
         std::vector<std::string> param;
@@ -343,6 +349,11 @@ void Hospital::print_all_patients(Params)
 
 void Hospital::print_current_patients(Params)
 {
+    if (current_patients_.empty() ){
+        std::cout << "None" << std::endl;
+        return;
+    }
+
     for (auto patient : current_patients_){
         std::cout << patient << std::endl;
         std::vector<std::string> param;
