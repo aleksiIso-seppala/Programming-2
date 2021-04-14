@@ -1,4 +1,5 @@
 #include "careperiod.hh"
+#include "utils.hh"
 #include <iostream>
 
 CarePeriod::CarePeriod(const std::string& start, Person* patient):
@@ -15,9 +16,9 @@ CarePeriod::~CarePeriod()
 {
 }
 
-void CarePeriod::close_period()
+void CarePeriod::close_period(Date date)
 {
-    end_ = utils::today;
+    end_ = date;
 }
 
 void CarePeriod::assign_staff(std::string staff)
@@ -47,4 +48,27 @@ void CarePeriod::print_staff()
     for(auto member : assigned_staff_){
         std::cout << " " << member;
     }
+}
+
+std::string CarePeriod::get_patient()
+{
+    return patient_->get_id();
+}
+
+bool CarePeriod::is_open()
+{
+    if (end_ == not_set_){
+        return true;
+    }
+    return false;
+}
+
+bool CarePeriod::find_staff(std::string staff)
+{
+    for(auto member : assigned_staff_){
+        if (member == staff){
+            return true;
+        }
+    }
+    return false;
 }

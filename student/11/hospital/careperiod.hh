@@ -29,11 +29,14 @@ public:
 
     // More public methods
 
-    void close_period();
+    void close_period(Date);
     void assign_staff(std::string);
     void print_start();
     void print_end();
     void print_staff();
+    std::string get_patient();
+    bool is_open();
+    bool find_staff(std::string);
 
 private:
     Person* patient_;

@@ -110,11 +110,18 @@ public:
 
 
 private:
+
     // Obvious container attributes.
-    std::map<std::string, Person*> current_patients_;
+
+    // current_patients_ is now a set to eliminate repeated information
+    // the Person* is stored in the all_patients section and all the
+    // changes all done to that.
+    // current_patients_ is only used for keeping up with who is in the
+    // hospital.
+    std::set<std::string> current_patients_;
     std::map<std::string, Person*> staff_;
     std::map<std::string, Person*> all_patients_;
-    std::map<std::string, std::vector<CarePeriod*>> care_periods_;
+    std::vector<CarePeriod*> care_periods_;
     // More attributes and methods
 };
 

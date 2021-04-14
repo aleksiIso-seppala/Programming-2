@@ -18,6 +18,14 @@ Hospital::~Hospital()
         delete iter->second;
     }
 
+    for( std::map<std::string, Person*>::iterator
+         iter = all_patients_.begin();
+         iter != all_patients_.end();
+         ++iter )
+    {
+        delete iter->second;
+    }
+
     // Remember to deallocate patients also
 }
 
@@ -47,13 +55,12 @@ void Hospital::enter(Params params)
         all_patients_.insert({patient, new_patient});
     }
 
-    current_patients_.insert({patient, all_patients_.at(patient)});
-    CarePeriod* new_careperiod = new CarePeriod(utils::today, current_patients_.at(patient));
+    current_patients_.insert(patient);
 
-    std::vector<CarePeriod*> empty_vector;
-    care_periods_.insert({patient, empty_vector});
-    care_periods_.at(patient).push_back(new_careperiod);
+    CarePeriod* new_careperiod = new CarePeriod(utils::today, all_patients_.at(patient));
+    care_periods_.push_back(new_careperiod);
     std::cout << PATIENT_ENTERED << std::endl;
+
 }
 
 void Hospital::leave(Params params)
@@ -64,9 +71,16 @@ void Hospital::leave(Params params)
         return;
     }
 
-    care_periods_.at(patient).back()->close_period();
+    Date date = utils::today;
+
+    for(unsigned int i=0;i<care_periods_.size();i++){
+        if(care_periods_.at(i)->get_patient() == patient and care_periods_.at(i)->is_open()){
+            care_periods_.at(i)->close_period(date);
+        }
+    }
     current_patients_.erase(patient);
     std::cout << PATIENT_LEFT << std::endl;
+
 }
 
 void Hospital::assign_staff(Params params)
@@ -84,7 +98,14 @@ void Hospital::assign_staff(Params params)
         return;
     }
 
-    care_periods_.at(patient).back()->assign_staff(staff);
+    unsigned int i = 0;
+    for(i=0;i<care_periods_.size();i++){
+        if(care_periods_.at(i)->get_patient() == patient and care_periods_.at(i)->is_open()){
+            break;
+        }
+    }
+    std::cout << STAFF_ASSIGNED << patient << std::endl;
+    care_periods_.at(i)->assign_staff(staff);
 
 }
 
@@ -100,14 +121,14 @@ void Hospital::add_medicine(Params params)
         std::cout << NOT_NUMERIC << std::endl;
         return;
     }
-    std::map<std::string, Person*>::const_iterator
+    std::set<std::string>::const_iterator
             patient_iter = current_patients_.find(patient);
     if( patient_iter == current_patients_.end() )
     {
         std::cout << CANT_FIND << patient << std::endl;
         return;
     }
-    patient_iter->second->add_medicine(medicine, stoi(strength), stoi(dosage));
+    all_patients_.at(patient)->add_medicine(medicine, stoi(strength), stoi(dosage));
     std::cout << MEDICINE_ADDED << patient << std::endl;
 }
 
@@ -115,14 +136,14 @@ void Hospital::remove_medicine(Params params)
 {
     std::string medicine = params.at(0);
     std::string patient = params.at(1);
-    std::map<std::string, Person*>::const_iterator
+    std::set<std::string>::const_iterator
             patient_iter = current_patients_.find(patient);
     if( patient_iter == current_patients_.end() )
     {
         std::cout << CANT_FIND << patient << std::endl;
         return;
     }
-    patient_iter->second->remove_medicine(medicine);
+    all_patients_.at(patient)->remove_medicine(medicine);
     std::cout << MEDICINE_REMOVED << patient << std::endl;
 }
 
@@ -132,32 +153,78 @@ void Hospital::print_patient_info(Params params)
 
     if(all_patients_.find(patient) == all_patients_.end()){
         std::cout << CANT_FIND << patient << std::endl;
+        return;
     }
-    for (unsigned int i=0; i<care_periods_.at(patient).size(); i++){
 
-        std::cout << "* Care period: ";
-        care_periods_.at(patient).at(i)->print_start();
-        std::cout << " - ";
-        care_periods_.at(patient).at(i)->print_end();
-        std::cout << std::endl;
+    for (unsigned int i=0; i<care_periods_.size();i++){
 
-        std::cout << "  - Staff:";
-        care_periods_.at(patient).at(i)->print_staff();
-        std::cout << std::endl;
+        if (care_periods_.at(i)->get_patient() == patient){
+            std::cout << "* Care period: ";
+            care_periods_.at(i)->print_start();
+            std::cout << " - ";
+            care_periods_.at(i)->print_end();
+            std::cout << std::endl;
+
+            std::cout << "  - Staff:";
+            care_periods_.at(i)->print_staff();
+            std::cout << std::endl;
+        }
     }
     std::cout << "* Medicines:";
-    all_patients_.at(patient)->print_medicines("- ");
-
+    all_patients_.at(patient)->print_medicines("  - ");
 }
 
 void Hospital::print_care_periods_per_staff(Params params)
 {
 
-}
+    std::string staff_member = params.at(0);
 
+    bool care_periods_found = false;
+    for (unsigned int i=0; i<care_periods_.size();i++){
+        if (care_periods_.at(i)->find_staff(staff_member)){
+            care_periods_.at(i)->print_start();
+            std::cout << " - ";
+            care_periods_.at(i)->print_end();
+            std::cout << std::endl;
+
+            std::cout << "* Patient: "
+            << care_periods_.at(i)->get_patient() << std::endl;
+
+            care_periods_found = true;
+        }
+    }
+
+    if (not care_periods_found){
+        std::cout << "None" << std::endl;
+    }
+
+}
 void Hospital::print_all_medicines(Params)
 {
-
+    // collecting all the medicines to a set
+    std::set<std::string> medicines;
+    for (auto patient : all_patients_){
+        for (auto medicine : patient.second->get_medicines()){
+            if(medicines.find(medicine) == medicines.end()){
+                medicines.insert(medicine);
+            }
+        }
+    }
+    if (medicines.size() == 0){
+        std::cout << "None" << std::endl;
+        return;
+    }
+    // printing all the medicines in the correct order
+    for (auto medicine : medicines){
+        std::cout << medicine << " prescribed for" << std::endl;
+        for (auto patient : all_patients_){
+            for (auto medicine__ : patient.second->get_medicines()){
+                if (medicine == medicine__){
+                    std::cout << "* " << patient.second->get_id() << std::endl;
+                }
+            }
+        }
+    }
 }
 
 void Hospital::print_all_staff(Params)
@@ -177,12 +244,22 @@ void Hospital::print_all_staff(Params)
 
 void Hospital::print_all_patients(Params)
 {
-
+    for (auto patient : all_patients_){
+        std::cout << patient.first << std::endl;
+        std::vector<std::string> param;
+        param.push_back(patient.first);
+        print_patient_info(param);
+    }
 }
 
 void Hospital::print_current_patients(Params)
 {
-
+    for (auto patient : current_patients_){
+        std::cout << patient << std::endl;
+        std::vector<std::string> param;
+        param.push_back(patient);
+        print_patient_info(param);
+    }
 }
 
 void Hospital::set_date(Params params)
