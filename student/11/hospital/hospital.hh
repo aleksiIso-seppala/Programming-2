@@ -5,8 +5,12 @@
  * Class for describing a hospital. Only a single object created from this
  * class. Implements all commands in hospital program.
  *
- * Note: Students need change this class to implement commands missing
- * in the template code.
+ * Writer of the program
+ * Name : Aleksi Iso-Seppälä
+ * Student-id : H292168
+ * username  : fsalis
+ * E-Mail : aleksi.iso-seppala@tuni.fi
+ *
  * */
 #ifndef HOSPITAL_HH
 #define HOSPITAL_HH

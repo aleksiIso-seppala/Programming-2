@@ -4,7 +4,12 @@
  * ----------
  * Class for describing a patient's care period in hospital.
  *
- * Note: Students need to implement almost all of this class by themselves.
+ * Writer of the program
+ * Name : Aleksi Iso-Seppälä
+ * Student-id : H292168
+ * username  : fsalis
+ * E-Mail : aleksi.iso-seppala@tuni.fi
+ *
  * */
 #ifndef CAREPERIOD_HH
 #define CAREPERIOD_HH
@@ -29,12 +34,27 @@ public:
 
     // More public methods
 
+    // closes a care period by adding a end date to it
     void close_period(Date);
+
+    // assigns staff for a care period
     void assign_staff(std::string);
+
+    // prints the start date of a care period
     void print_start();
+
+    // prints the end date of a care period,
+    // prints nothing if the periods is still
+    // open.
     void print_end();
+
+    // prints all the staff in a care period
     void print_staff();
+
+    // getter function for getting the patients name
     std::string get_patient();
+
+    // function check if a care period is still open
     bool is_open();
     bool find_staff(std::string);
 
@@ -42,7 +62,8 @@ private:
     Person* patient_;
     Date start_;
     Date end_;
-    Date not_set_;
+
+    bool open_period_ = true;
 
     std::set<std::string> assigned_staff_;
     // More attributes and methods

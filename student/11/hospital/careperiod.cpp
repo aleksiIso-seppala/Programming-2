@@ -1,3 +1,12 @@
+/*
+ * Writer of the program
+ * Name : Aleksi Iso-Seppälä
+ * Student-id : H292168
+ * username  : fsalis
+ * E-Mail : aleksi.iso-seppala@tuni.fi
+ *
+ * */
+
 #include "careperiod.hh"
 #include "utils.hh"
 #include <iostream>
@@ -19,6 +28,7 @@ CarePeriod::~CarePeriod()
 void CarePeriod::close_period(Date date)
 {
     end_ = date;
+    open_period_ = false;
 }
 
 void CarePeriod::assign_staff(std::string staff)
@@ -33,7 +43,7 @@ void CarePeriod::print_start()
 
 void CarePeriod::print_end()
 {
-    if (end_ == not_set_){
+    if (open_period_){
         return;
     }
     end_.print();
@@ -57,10 +67,7 @@ std::string CarePeriod::get_patient()
 
 bool CarePeriod::is_open()
 {
-    if (end_ == not_set_){
-        return true;
-    }
-    return false;
+    return open_period_;
 }
 
 bool CarePeriod::find_staff(std::string staff)
