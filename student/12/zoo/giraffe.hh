@@ -8,6 +8,6 @@ class Giraffe: public Mammal
 {
 public:
     Giraffe();
-    void make_noise(std::ostream& output) const;
+    void make_noise(std::ostream& output);
 
 };
