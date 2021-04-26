@@ -24,8 +24,6 @@ private slots:
 
     void on_keyLineEdit_editingFinished();
 
-    void on_matchCheckBox_stateChanged(int arg1);
-
 private:
     Ui::MainWindow *ui;
     QString file_input_;

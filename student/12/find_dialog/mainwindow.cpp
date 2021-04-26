@@ -51,7 +51,7 @@ void MainWindow::on_findPushButton_clicked()
     while (getline(file, row)){
         word_in_std_ = word_input_.toStdString();
         std::locale loc;
-        if ( not is_match_case_){
+        if ( not ui->matchCheckBox->isChecked()){
             for (auto elem : row){
                 std::tolower(elem, loc);
             }
@@ -87,12 +87,3 @@ void MainWindow::on_keyLineEdit_editingFinished()
      word_input_ = ui->keyLineEdit->text();
 }
 
-void MainWindow::on_matchCheckBox_stateChanged(int arg1)
-{
-    if (arg1 == 0){
-        is_match_case_ = true;
-    }
-    else{
-        is_match_case_ = false;
-    }
-}
