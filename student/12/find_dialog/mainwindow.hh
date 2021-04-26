@@ -24,10 +24,13 @@ private slots:
 
     void on_keyLineEdit_editingFinished();
 
+    void on_matchCheckBox_stateChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
     QString file_input_;
     QString word_input_;
     bool is_match_case_ = true;
+    std::string word_in_std_;
 };
 #endif // MAINWINDOW_HH

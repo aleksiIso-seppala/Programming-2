@@ -1,6 +1,7 @@
 #include "mainwindow.hh"
 #include "ui_mainwindow.h"
 #include <QFile>
+#include <fstream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -42,33 +43,38 @@ void MainWindow::on_findPushButton_clicked()
         return;
     }
 
-    QFile file(file_input_);
+    std::string stdfilename = file_input_.toStdString();
+    std::ifstream file(stdfilename);
     QString line;
     bool word_found = false;
-    file.open(QIODevice::ReadOnly);
-    while (not file.atEnd()){
-
-        QString word_in_file = file.readLine();
-        QString word_to_find = word_input_;
-        int x = 0;
-        if (is_match_case_){
-            x = QString::localeAwareCompare(word_to_find, word_in_file);
-
+    std::string row;
+    while (getline(file, row)){
+        word_in_std_ = word_input_.toStdString();
+        std::locale loc;
+        if ( not is_match_case_){
+            for (auto elem : row){
+                std::tolower(elem, loc);
+            }
+            std::string tmp;
+            std::for_each(word_in_std_.begin(), word_in_std_.end(), [](char & c){
+                c = ::tolower(c);
+            });
         }
-        if (x == 0){
-            ui->textBrowser->setText("loyty");
+        std::size_t found = row.find(word_in_std_);
+        if (found != std::string::npos)
+        {
             word_found = true;
             break;
         }
-
     }
+
     file.close();
-//    if(word_found){
-//        ui->textBrowser->setText("Word found");
-//    }
-//    else{
-//        ui->textBrowser->setText("Word not found");
-//    }
+    if(word_found){
+        ui->textBrowser->setText("Word found");
+    }
+    else{
+        ui->textBrowser->setText("Word not found");
+    }
 }
 
 void MainWindow::on_fileLineEdit_editingFinished()
@@ -79,4 +85,14 @@ void MainWindow::on_fileLineEdit_editingFinished()
 void MainWindow::on_keyLineEdit_editingFinished()
 {
      word_input_ = ui->keyLineEdit->text();
+}
+
+void MainWindow::on_matchCheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        is_match_case_ = true;
+    }
+    else{
+        is_match_case_ = false;
+    }
 }
