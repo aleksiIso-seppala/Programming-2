@@ -30,11 +30,10 @@ private slots:
 
     void on_resetButton_clicked();
 
-    void on_closeButton_clicked();
-
     void on_timer_timeout();
 
 private:
+    void update_display(int mins, int secs);
     Ui::MainWindow *ui;
     // Add other necessary members here
 };

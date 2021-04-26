@@ -7,9 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     connect(ui->startButton, &QPushButton::clicked, this, &MainWindow::on_startButton_clicked);
-    connect(ui->startButton, &QPushButton::clicked, this, &MainWindow::on_stopButton_clicked);
-    connect(ui->startButton, &QPushButton::clicked, this, &MainWindow::on_resetButton_clicked);
+    connect(ui->stopButton, &QPushButton::clicked, this, &MainWindow::on_stopButton_clicked);
+    connect(ui->resetButton, &QPushButton::clicked, this, &MainWindow::on_resetButton_clicked);
 
     connect(timer, &QTimer::timeout, this, &MainWindow::on_timer_timeout);
 }
@@ -21,7 +22,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_startButton_clicked()
 {
-    timer->start(100);
+    timer->start(1000);
 }
 
 void MainWindow::on_stopButton_clicked()
@@ -31,12 +32,8 @@ void MainWindow::on_stopButton_clicked()
 
 void MainWindow::on_resetButton_clicked()
 {
-
-}
-
-void MainWindow::on_closeButton_clicked()
-{
-
+    ui->lcdNumberMin->display(0);
+    ui->lcdNumberSec->display(0);
 }
 
 void MainWindow::on_timer_timeout()
@@ -46,11 +43,16 @@ void MainWindow::on_timer_timeout()
 
     if(current_secs == 59)
     {
-        ui->lcdNumberMin->display(current_mins + 1);
-        ui->lcdNumberSec->display(0);
+        update_display(current_mins+1, 0);
     }
     else
     {
-        ui->lcdNumberSec->display(current_secs + 1);
+        update_display(current_mins, current_secs + 1);
     }
+}
+
+void MainWindow::update_display(int mins, int secs)
+{
+    ui->lcdNumberMin->display(mins);
+    ui->lcdNumberSec->display(secs);
 }
