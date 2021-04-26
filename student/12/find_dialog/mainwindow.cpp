@@ -50,11 +50,12 @@ void MainWindow::on_findPushButton_clicked()
 
         QString word_in_file = file.readLine();
         QString word_to_find = word_input_;
-//        if (not is_match_case_){
-//            QString word_to_find = word_input_.toLower();
-//            QString word_in_file = line.toLower();
-//        }
-        if (word_to_find == word_in_file){
+        int x = 0;
+        if (is_match_case_){
+            x = QString::localeAwareCompare(word_to_find, word_in_file);
+
+        }
+        if (x == 0){
             ui->textBrowser->setText("loyty");
             word_found = true;
             break;

@@ -24,6 +24,16 @@ public:
 private slots:
     // Add your slots here
 
+    void on_startButton_clicked();
+
+    void on_stopButton_clicked();
+
+    void on_resetButton_clicked();
+
+    void on_closeButton_clicked();
+
+    void on_timer_timeout();
+
 private:
     Ui::MainWindow *ui;
     // Add other necessary members here
