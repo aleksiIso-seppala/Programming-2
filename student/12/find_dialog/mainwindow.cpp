@@ -55,7 +55,6 @@ void MainWindow::on_findPushButton_clicked()
             for (auto elem : row){
                 std::tolower(elem, loc);
             }
-            std::string tmp;
             std::for_each(word_in_std_.begin(), word_in_std_.end(), [](char & c){
                 c = ::tolower(c);
             });
