@@ -62,7 +62,15 @@ void MainWindow::on_start_button_clicked()
 void MainWindow::set_up_board(){
 
     string mystr = ALPHABETS.substr(0, number_of_cards_);
-    ui->textBrowser->setText(mystr);
+    random_shuffle(mystr.begin(),mystr.end());
+    int alphabet_index = 0;
+
+    for (int i=0; i<rows_; i++){
+        for(int j=0; j<columns_; j++){
+            QPushButton* push_button = new QPushButton(this);
+        }
+    }
+
 }
 
 void MainWindow::game_loop(){
